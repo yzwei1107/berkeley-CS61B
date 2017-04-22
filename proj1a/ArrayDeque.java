@@ -12,7 +12,7 @@ public class ArrayDeque<Item> {
         this.back = 5;
     }
 
-    private void resize(int factor) {
+    private void resize(double factor) {
         Item[] newArray = (Item []) new Object [items.length * factor];
         int numberOfItemsAfterFront = size - front; // Includes front
         int numberOfItemsBeforeFront = size - numberOfItemsAfterFront;
@@ -47,7 +47,7 @@ public class ArrayDeque<Item> {
 
         front = minusOne(front);
 
-        items[front].item = newItem;
+        items[front] = newItem;
     }
 
     public void addLast(Item newItem) {
@@ -57,7 +57,7 @@ public class ArrayDeque<Item> {
 
         back = plusOne(front);
 
-        items[back].item = newItem;
+        items[back] = newItem;
     }
 
     public boolean isEmpty() {
@@ -80,8 +80,8 @@ public class ArrayDeque<Item> {
             return null;
         }
 
-        Item firstItem = items[front].item;
-        front = null;
+        Item firstItem = items[front];
+        items[front] = null;
         front = plusOne(front);
 
         if (items.length >= 16 && size / items.length < 0.25 ) {
@@ -96,8 +96,8 @@ public class ArrayDeque<Item> {
             return null;
         }
 
-        Item lastItem = items[back].item;
-        back = null;
+        Item lastItem = items[back];
+        items[back] = null;
         back = minusOne(back);
 
         if (items.length >= 16 && size / items.length < 0.25 ) {
@@ -114,6 +114,6 @@ public class ArrayDeque<Item> {
             arrayIndex -= items.length;
         }
         
-        return items[arrayIndex].item;
+        return items[arrayIndex];
     }
 }
