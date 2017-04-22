@@ -13,7 +13,7 @@ public class ArrayDeque<Item> {
     }
 
     private void resize(double factor) {
-        Item[] newArray = (Item []) new Object [items.length * factor];
+        Item[] newArray = (Item []) new Object [(int) (items.length * factor)];
         int numberOfItemsAfterFront = size - front; // Includes front
         int numberOfItemsBeforeFront = size - numberOfItemsAfterFront;
 
