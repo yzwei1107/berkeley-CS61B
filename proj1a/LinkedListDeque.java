@@ -78,16 +78,6 @@ public class LinkedListDeque<Item> {
             return null;
         }
 
-        int lastIndex = size - 1;
-
-        if (index > lastIndex / 2) {
-            return getFromBack(index);
-        } else {
-            return getFromFront(index);
-        }
-    }
-
-    private Item getFromFront(int index) {
         int currentIndex = 0;
         Node p = sentinel.next;
 
@@ -97,19 +87,7 @@ public class LinkedListDeque<Item> {
         }
 
         return p.item;
-    }
-
-    private Item getFromBack(int index) {
-        int currentIndex = size - 1;
-        Node p = sentinel.previous;
-
-        while  (currentIndex != index) {
-            p = p.next;
-            currentIndex--;
         }
-
-        return p.item;
-
     }
 
     public Item getRecursive(int index) {
@@ -118,31 +96,19 @@ public class LinkedListDeque<Item> {
         }
 
         int lastIndex = size - 1;
- 
-        if (index > lastIndex / 2) {
-            Node p = sentinel.previous;
-            return getFromBackRecursive(p, index);
-        } else {
-            Node p = sentinel.next;
-            return getFromFrontRecursive(p, lastIndex - index);
+
+        Node p = sentinel.next;
+        return getRecursiveHelper(p, index);
         }
     }
 
-    private Item getFromFrontRecursive(Node currentNode, int currentIndex) {
+    private Item getRecursiveHelper(Node currentNode, int currentIndex) {
         if (currentIndex == 0) {
             return currentNode.item;
         }
 
-        return getFromFrontRecursive(currentNode.next, --currentIndex);
+        return getRecursiveHelper(currentNode.next, --currentIndex);
 
-    }
-
-    private Item getFromBackRecursive(Node currentNode, int currentIndex) {
-        if (currentIndex == 0) {
-            return currentNode.item;
-        }
-
-        return getFromBackRecursive(currentNode.previous, --currentIndex);
     }
 
     public class Node {
