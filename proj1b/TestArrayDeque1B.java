@@ -27,6 +27,8 @@ public class TestArrayDeque1B {
                     solutionDeque.addFirst(randomIntFromZeroToThree);
 
                     currentMethod = new DequeOperation("addFirst", randomIntFromZeroToThree);
+                    methodsCalled.addOperation(currentMethod);
+                    currentMethod = new DequeOperation("get", 0);
                     expected = solutionDeque.get(0);
                     actual = studentDeque.get(0);
 
@@ -35,10 +37,14 @@ public class TestArrayDeque1B {
                 case 1 :
                     studentDeque.addLast(randomIntFromZeroToThree);
                     solutionDeque.addLast(randomIntFromZeroToThree);
+                    int expectedLastIndex = solutionDeque.size() - 1;
 
                     currentMethod = new DequeOperation("addLast", randomIntFromZeroToThree);
-                    expected = solutionDeque.get(solutionDeque.size() - 1);
-                    actual = studentDeque.get(studentDeque.size() - 1);
+                    methodsCalled.addOperation(currentMethod);
+                    currentMethod = new DequeOperation("get", expectedLastIndex);
+
+                    expected = solutionDeque.get(expectedLastIndex);
+                    actual = studentDeque.get(expectedLastIndex);
 
                     break;
 
