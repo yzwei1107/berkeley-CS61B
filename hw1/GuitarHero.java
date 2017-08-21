@@ -17,7 +17,6 @@ public class GuitarHero {
         }
 
         while (true) {
-
             /* check if the user has typed a key; if so, process it */
             if (StdDraw.hasNextKeyTyped()) {
                 char key = StdDraw.nextKeyTyped();

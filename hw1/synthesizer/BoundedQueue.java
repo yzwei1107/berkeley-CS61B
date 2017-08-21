@@ -1,10 +1,12 @@
 package synthesizer;
 
+import java.util.Iterator;
+
 /** Interface for bounded queue. Items can only be enqueued at the back of the queue, and can
  *  only be dequeued from the front of the queue.
  *  @author moboa
  */
-public interface BoundedQueue<Item> {
+public interface BoundedQueue<Item> extends Iterable<Item>{
 
     /* Returns the maximum number of items the queue can hold. */
     int capacity();
@@ -30,4 +32,6 @@ public interface BoundedQueue<Item> {
     default boolean isFull() {
         return fillCount() == capacity();
     }
+
+     Iterator<Item> iterator();
 }

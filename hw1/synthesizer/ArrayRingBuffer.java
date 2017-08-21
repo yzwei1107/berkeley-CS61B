@@ -2,6 +2,7 @@ package synthesizer;// TODO: Make sure to make this class a part of the synthesi
 // package <package name>;
 import synthesizer.AbstractBoundedQueue;
 
+import javax.swing.text.html.HTMLDocument;
 import java.util.Iterator;
 
 /**
@@ -81,5 +82,27 @@ public class ArrayRingBuffer<Item> extends AbstractBoundedQueue<Item> {
         return items[first];
     }
 
-    // TODO: When you get to part 5, implement the needed code to support iteration.
+    @Override
+    public Iterator<Item> iterator() {
+        return new BufferIterator();
+    }
+
+    private class BufferIterator implements Iterator<Item>{
+        private int position = first;
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < fillCount;
+        }
+
+        @Override
+        public Item next() {
+            Item currentItem = items[position];
+            position++;
+            index++;
+            return currentItem;
+        }
+    }
+
 }
