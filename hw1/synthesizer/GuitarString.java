@@ -1,8 +1,5 @@
-// TODO: Make sure to make this class a part of the synthesizer package
-//package <package name>;
 package synthesizer;
 
-import java.lang.management.BufferPoolMXBean;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,14 +35,14 @@ public class GuitarString {
      * (step 1 of the algorithm).
      */
     public void pluck() {
-        while(!buffer.isEmpty()) {
+        while (!buffer.isEmpty()) {
             buffer.dequeue();
         }
 
         /* The doubles in the buffer must be unique. */
         Set<Double> randomDoubleSet = new HashSet<>();
 
-        while(randomDoubleSet.size() < buffer.capacity()) {
+        while (randomDoubleSet.size() < buffer.capacity()) {
             randomDoubleSet.add(Math.random() - 0.5);
         }
 

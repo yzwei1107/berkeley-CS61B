@@ -3,7 +3,7 @@ package synthesizer;
 /**
  * @author moboa
  */
-public abstract class AbstractBoundedQueue<Item> implements BoundedQueue<Item> {
+public abstract class AbstractBoundedQueue<T> implements BoundedQueue<T> {
     /* The number of items in the queue. */
     protected int fillCount;
 
