@@ -1,11 +1,22 @@
 // TODO: Make sure to make this class a part of the synthesizer package
 //package <package name>;
+package synthesizer;
 
-//Make sure this class is public
+import java.lang.management.BufferPoolMXBean;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Simulation of a guitar string using the Karplus-Strong algorithm.
+ * @author moboa
+ *
+ * The algorithm is simply the following three steps:
+ * 1. Replace every item in a BoundedQueue with random noise (double values between -0.5 and 0.5).
+ * 2. Remove the front double in the BoundedQueue and average it with the next double in the BQ.
+ * 3. Play the double that you dequeued in step 2. Go back to step 2 (repeating forever).
+ *
+ */
 public class GuitarString {
-    /** Constants. Do not change. In case you're curious, the keyword final means
-     * the values cannot be changed at runtime. We'll discuss this and other topics
-     * in lecture on Friday. */
     private static final int SR = 44100;      // Sampling Rate
     private static final double DECAY = .996; // energy decay factor
 
@@ -14,34 +25,46 @@ public class GuitarString {
 
     /* Create a guitar string of the given frequency.  */
     public GuitarString(double frequency) {
-        // TODO: Create a buffer with capacity = SR / frequency. You'll need to
-        //       cast the result of this divsion operation into an int. For better
-        //       accuracy, use the Math.round() function before casting.
-        //       Your buffer should be initially filled with zeros.
+        int bufferCapacity = (int) Math.round(SR / frequency);
+        buffer = new ArrayRingBuffer<>(bufferCapacity);
+
+        while (!buffer.isFull()) {
+            buffer.enqueue(0.0);
+        }
     }
 
 
-    /* Pluck the guitar string by replacing the buffer with white noise. */
+    /* Pluck the guitar string by replacing the buffer with white noise
+     * (step 1 of the algorithm).
+     */
     public void pluck() {
-        // TODO: Dequeue everything in the buffer, and replace it with random numbers
-        //       between -0.5 and 0.5. You can get such a number by using:
-        //       double r = Math.random() - 0.5;
-        //
-        //       Make sure that your random numbers are different from each other.
+        while(!buffer.isEmpty()) {
+            buffer.dequeue();
+        }
+
+        /* The doubles in the buffer must be unique. */
+        Set<Double> randomDoubleSet = new HashSet<>();
+
+        while(randomDoubleSet.size() < buffer.capacity()) {
+            randomDoubleSet.add(Math.random() - 0.5);
+        }
+
+        for (Double r : randomDoubleSet) {
+            buffer.enqueue(r);
+        }
+
     }
 
     /* Advance the simulation one time step by performing one iteration of
-     * the Karplus-Strong algorithm. 
+     * the Karplus-Strong algorithm (step 2).
      */
     public void tic() {
-        // TODO: Dequeue the front sample and enqueue a new sample that is
-        //       the average of the two multiplied by the DECAY factor.
-        //       Do not call StdAudio.play().
+        double newAveragedDouble = DECAY * (buffer.dequeue() + buffer.peek()) / 2;
+        buffer.enqueue(newAveragedDouble);
     }
 
     /* Return the double at the front of the buffer. */
     public double sample() {
-        // TODO: Return the correct thing.
-        return 0;
+        return buffer.peek();
     }
 }

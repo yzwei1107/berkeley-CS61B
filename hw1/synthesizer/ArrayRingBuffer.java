@@ -10,7 +10,7 @@ import java.util.Iterator;
  */
 public class ArrayRingBuffer<Item> extends AbstractBoundedQueue<Item> {
     /* Index for the next dequeue or peek. */
-    private int first;            // index for the next dequeue or peek
+    private int first;
     /* Index for the next enqueue. */
     private int last;
     /* Array for storing the buffer data. */
