@@ -22,7 +22,9 @@ public class GuitarHero {
             if (StdDraw.hasNextKeyTyped()) {
                 char key = StdDraw.nextKeyTyped();
                 int indexOfGuitarString = keyboard.indexOf(key);
-                strings[indexOfGuitarString].pluck();
+                if (indexOfGuitarString != -1) {
+                    strings[indexOfGuitarString].pluck();
+                }
             }
 
         /* compute the superposition of samples */
