@@ -1,6 +1,5 @@
 package lab8;
 
-import javax.swing.text.html.HTMLDocument;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -90,7 +89,7 @@ public class BSTMap<K extends Comparable, V extends Comparable> implements Map61
         int cmp = key.compareTo(current.key);
         if (cmp == 0) {
             current.value = value;
-        } else if(cmp < 0) {
+        } else if (cmp < 0) {
             current.left = putTraversal(key, value, current.left);
         } else {
             current.right = putTraversal(key, value, current.right);
@@ -140,7 +139,7 @@ public class BSTMap<K extends Comparable, V extends Comparable> implements Map61
         }
         @Override
         public boolean hasNext() {
-             return index < size;
+            return index < size;
         }
 
         @Override
