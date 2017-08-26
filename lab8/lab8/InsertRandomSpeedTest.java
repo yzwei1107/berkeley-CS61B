@@ -2,7 +2,7 @@ package lab8;
 import java.util.TreeMap;
 import java.io.IOException;
 import java.util.Scanner;
-import edu.princeton.cs.algs4.Stopwatch;
+import stdlib.Stopwatch;
 
 /** Performs a timing test on three different set implementations.
  *  @author Josh Hug

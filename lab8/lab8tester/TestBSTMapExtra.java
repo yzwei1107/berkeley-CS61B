@@ -1,4 +1,3 @@
-package lab8tester;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashSet;
@@ -79,9 +78,5 @@ public class TestBSTMapExtra {
         assertTrue(q.containsKey("a"));     
         assertTrue(q.containsKey("b"));
         assertTrue(q.containsKey("f"));
-    }
-
-    public static void main(String[] args) {
-        jh61b.junit.TestRunner.runTests(TestBSTMapExtra.class);
     }
 }
