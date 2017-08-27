@@ -1,5 +1,7 @@
 package hw2;
 
+import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+
 /**
  * A percolation system modeled using an N-by-N grid of sites.
  * @author moboa
