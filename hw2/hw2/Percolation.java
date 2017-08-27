@@ -22,13 +22,13 @@ public class Percolation {
         this.VIRTUAL_TOP_SITE_INDEX = N * N;
         this.VIRTUAL_BOTTOM_SITE_INDEX = N * N + 1;
         this.sites = new boolean[N][N];
-        this.unionFind = new WeightedQuickUnionUF(N*N + 2);
-        this.unionFindNoBottom = new WeightedQuickUnionUF(N*N + 1);
+        this.unionFind = new WeightedQuickUnionUF(N * N + 2);
+        this.unionFindNoBottom = new WeightedQuickUnionUF(N * N + 1);
         this.numberOfOpenSites = 0;
     }
 
     /* Open the site at (row, col) */
-    public void open(int row, int col){
+    public void open(int row, int col) {
         if (row < 0 || col < 0 || row >= N || col >= N) {
             throw new IndexOutOfBoundsException();
         }

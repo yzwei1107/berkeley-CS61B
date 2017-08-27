@@ -1,8 +1,9 @@
 package hw2;
 
 /**
- *  Perform T independent experiments on an N-by-N grid (Monte Carlo simulation).
- *  @author moboa
+ * Perform T independent experiments on an N-by-N grid (Monte Carlo simulation).
+ *
+ * @author moboa
  */
 
 public class PercolationStats {
@@ -12,23 +13,23 @@ public class PercolationStats {
     private double confidenceHigh;
 
     public PercolationStats(int N, int T) {
-       if (N <= 0 || T <= 0) {
-           throw new IllegalArgumentException();
-       }
+        if (N <= 0 || T <= 0) {
+            throw new IllegalArgumentException();
+        }
 
-       int[] sampleValues = new int[T];
-       for (int i = 0; i < T; i++) {
-           Percolation percolationSim = new Percolation(N);
-           while (!percolationSim.percolates()) {
-               openRandomSite(percolationSim, N);
-           }
-           sampleValues[i] = percolationSim.numberOfOpenSites();
-           mean += percolationSim.numberOfOpenSites();
-       }
-       mean /= T;
-       calculateStdDev(sampleValues, T);
-       confidenceLow = mean - 1.96 * stddev / Math.sqrt(T);
-       confidenceHigh = mean + 1.96 * stddev / Math.sqrt(T);
+        int[] sampleValues = new int[T];
+        for (int i = 0; i < T; i++) {
+            Percolation percolationSim = new Percolation(N);
+            while (!percolationSim.percolates()) {
+                openRandomSite(percolationSim, N);
+            }
+            sampleValues[i] = percolationSim.numberOfOpenSites();
+            mean += percolationSim.numberOfOpenSites();
+        }
+        mean /= T;
+        calculateStdDev(sampleValues, T);
+        confidenceLow = mean - 1.96 * stddev / Math.sqrt(T);
+        confidenceHigh = mean + 1.96 * stddev / Math.sqrt(T);
 
     }
 
