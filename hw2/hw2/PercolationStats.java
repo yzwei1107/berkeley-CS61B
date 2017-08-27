@@ -24,10 +24,9 @@ public class PercolationStats {
                 openRandomSite(percolationSim, N);
             }
             sampleValues[i] = percolationSim.numberOfOpenSites();
-            mean += percolationSim.numberOfOpenSites();
+            calculateMean(sampleValues, T, i);
+            calculateStdDev(sampleValues, T, i);
         }
-        mean /= T;
-        calculateStdDev(sampleValues, T);
         confidenceLow = mean - 1.96 * stddev / Math.sqrt(T);
         confidenceHigh = mean + 1.96 * stddev / Math.sqrt(T);
 
@@ -44,9 +43,17 @@ public class PercolationStats {
         percolation.open(row, col);
     }
 
-    private void calculateStdDev(int[] sampleValues, int T) {
-        for (int i = 0; i < T; i++) {
-            stddev += Math.pow(sampleValues[i] - mean, 2);
+    private void calculateMean(int[] sampleValues, int T, int i) {
+        for (int j = 0; j <= i; j++) {
+            mean += sampleValues[j];
+        }
+
+        mean /= T;
+    }
+
+    private void calculateStdDev(int[] sampleValues, int T, int i) {
+        for (int j = 0; j <= i; j++) {
+            stddev += Math.pow(sampleValues[j] - mean, 2);
         }
 
         stddev /= (T - 1);

@@ -48,7 +48,9 @@ public class Percolation {
         if (row == 0) {
             unionFind.union(VIRTUAL_TOP_SITE_INDEX, xyTo1DIndex(row, col));
             unionFindNoBottom.union(VIRTUAL_TOP_SITE_INDEX, xyTo1DIndex(row, col));
-        } else if (row == N - 1) {
+        }
+
+        if (row == N - 1) {
             unionFind.union(VIRTUAL_BOTTOM_SITE_INDEX, xyTo1DIndex(row, col));
         }
     }
