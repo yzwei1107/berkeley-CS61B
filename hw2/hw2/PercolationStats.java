@@ -26,8 +26,10 @@ public class PercolationStats {
             }
             sampleValues[i] = percolationSim.numberOfOpenSites() / totalNumberOfSites;
             mean += percolationSim.numberOfOpenSites() / totalNumberOfSites;
-            calculateStdDev(sampleValues, T);
         }
+
+        mean /= T;
+        calculateStdDev(sampleValues, T);
         confidenceLow = mean - 1.96 * stddev / Math.sqrt(T);
         confidenceHigh = mean + 1.96 * stddev / Math.sqrt(T);
 
