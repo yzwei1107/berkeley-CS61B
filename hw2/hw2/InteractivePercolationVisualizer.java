@@ -10,15 +10,13 @@
  *
  ******************************************************************************/
 package hw2;                       
-import edu.princeton.cs.algs4.StdDraw;
-import edu.princeton.cs.algs4.StdOut;
 
 public class InteractivePercolationVisualizer {
-    /*private static final int DELAY = 20;
+    private static final int DELAY = 20;
 
     public static void main(String[] args) {
         // N-by-N percolation system (read from command-line, default = 10)
-        int N = 10;          
+        int N = 10;
         if (args.length == 1) {
             N = Integer.parseInt(args[0]);
         }
@@ -47,7 +45,7 @@ public class InteractivePercolationVisualizer {
 
                 // open site (i, j) provided it's in bounds
                 if (i >= 0 && i < N && j >= 0 && j < N) {
-                    if (!perc.isOpen(i, j)) { 
+                    if (!perc.isOpen(i, j)) {
                         StdOut.println(i + " " + j);
                     }
                     perc.open(i, j);
@@ -58,5 +56,5 @@ public class InteractivePercolationVisualizer {
             }
             StdDraw.show(DELAY);
         }
-    }*/
+    }
 }
