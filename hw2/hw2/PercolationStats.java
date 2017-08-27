@@ -17,8 +17,8 @@ public class PercolationStats {
             throw new IllegalArgumentException();
         }
 
-        int[] sampleValues = new int[T];
-        int totalNumberOfSites = N * N;
+        double[] sampleValues = new double[T];
+        double totalNumberOfSites = N * N;
         for (int i = 0; i < T; i++) {
             Percolation percolationSim = new Percolation(N);
             while (!percolationSim.percolates()) {
@@ -46,7 +46,7 @@ public class PercolationStats {
         percolation.open(row, col);
     }
 
-    private void calculateStdDev(int[] sampleValues, int T) {
+    private void calculateStdDev(double[] sampleValues, int T) {
         for (int i = 0; i < T; i++) {
             stddev += Math.pow(sampleValues[i] - mean, 2);
         }
