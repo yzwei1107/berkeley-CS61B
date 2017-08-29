@@ -1,6 +1,10 @@
 package lab9;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * Hash-based implementation of map using separate chaining for collisions
@@ -39,7 +43,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     public MyHashMap(int initialSize, double loadFactor) {
         this.idealLoadFactor = loadFactor;
-        this.table = (LinkedList<Node<K,V>>[]) new LinkedList[initialSize];
+        this.table = (LinkedList<Node<K, V>>[]) new LinkedList[initialSize];
     }
 
     /* Returns the index of the table that corresponds to the key */
@@ -118,7 +122,8 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     }
 
     private void resize(int newCapacity) {
-        LinkedList<Node <K, V>>[] newArray = (LinkedList<Node <K, V>>[]) new LinkedList[newCapacity];
+        LinkedList<Node<K, V>>[] newArray =
+                (LinkedList<Node<K, V>>[]) new LinkedList[newCapacity];
         Set<K> keys = keySet();
 
         for (K key : keys) {
