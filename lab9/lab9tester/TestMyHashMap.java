@@ -28,7 +28,7 @@ public class TestMyHashMap {
             b.put("hi" + i, 1);
             //make sure put is working via containsKey and get
             assertTrue( null != b.get("hi" + i)
-                        && b.containsKey("hi" + i)); 
+                        && b.containsKey("hi" + i));
         }
         b.clear();
         assertEquals(0, b.size());
@@ -141,7 +141,4 @@ public class TestMyHashMap {
         assertEquals(studentIDs.get("evil alan"), studentIDs.get("alan"));
     }
 
-    public static void main(String[] args) {
-        jh61b.junit.TestRunner.runTests(TestMyHashMap.class);
-    }
 }

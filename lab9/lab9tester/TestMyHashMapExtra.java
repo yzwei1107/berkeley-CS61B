@@ -54,8 +54,4 @@ public class TestMyHashMapExtra {
         assertTrue(q.containsKey("b"));
         assertTrue(q.containsKey("f"));
     }
-
-    public static void main(String[] args) {
-        jh61b.junit.TestRunner.runTests(TestMyHashMapExtra.class);
-    }
 }
