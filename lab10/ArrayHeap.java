@@ -156,10 +156,8 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
             resize(contents.length * 2);
         }
 
-        int index = size + 1;
-        contents[index] = new Node(item, priority);
-        size++;
-        swim(index);
+        contents[++size] = new Node(item, priority);
+        swim(size);
     }
 
     /**
@@ -211,7 +209,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         double oldPriority = -1;
         int index = -1;
 
-        for (int i = 0; i < size + 1; i++) {
+        for (int i = 1; i < size + 1; i++) {
             if (contents[i] != null && contents[i].myItem.equals(item)) {
                 oldPriority = contents[i].myPriority;
                 index = i;
