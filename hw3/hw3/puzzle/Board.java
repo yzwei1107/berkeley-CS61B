@@ -70,11 +70,12 @@ public class Board implements WorldState {
 
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (i == N - 1 && j == N - 1) {
+
+                int currentTile = tiles[i][j];
+                if (currentTile == 0) {
                     continue;
                 }
 
-                int currentTile = tiles[i][j];
                 int row = currentTile / N;
                 int column = currentTile % N;
 
