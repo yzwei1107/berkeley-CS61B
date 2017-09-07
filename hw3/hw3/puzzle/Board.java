@@ -23,7 +23,7 @@ public class Board implements WorldState {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 this.tiles[i][j] = tiles[i][j];
-                this.goal[i][j] = N * i + j;
+                this.goal[i][j] = N * i + j + 1;
             }
         }
 
