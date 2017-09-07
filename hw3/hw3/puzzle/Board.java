@@ -53,6 +53,11 @@ public class Board implements WorldState {
                 }
             }
         }
+
+        if (tiles[N - 1][N - 1] != goal[N - 1][N - 1]) {
+            hammingEstimate--;
+        }
+
         return hammingEstimate;
     }
 
@@ -65,6 +70,10 @@ public class Board implements WorldState {
 
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
+                if (i == N - 1 && j == N - 1) {
+                    continue;
+                }
+
                 int currentTile = tiles[i][j];
                 int row = currentTile / N;
                 int column = currentTile % N;
