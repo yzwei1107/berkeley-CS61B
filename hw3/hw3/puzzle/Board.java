@@ -76,8 +76,8 @@ public class Board implements WorldState {
                     continue;
                 }
 
-                int row = currentTile / N;
-                int column = currentTile % N;
+                int row = (currentTile - 1) / N;
+                int column = (currentTile - 1) % N;
 
                 manhattanEstimate += Math.abs(row - i);
                 manhattanEstimate += Math.abs(column - j);
@@ -111,7 +111,7 @@ public class Board implements WorldState {
 
     @Override
     public int estimatedDistanceToGoal() {
-        return hamming();
+        return manhattan();
     }
 
     /* Authot of this function : Josh Hug */
