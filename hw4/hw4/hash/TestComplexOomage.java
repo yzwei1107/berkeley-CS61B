@@ -1,5 +1,6 @@
 package hw4.hash;
 
+import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -41,9 +42,9 @@ public class TestComplexOomage {
             params.add(5);
         }
 
-        for (int i = 0; i < 256; i += 5) {
-            params.set(0, i);
-            params.set(1, i);
+        for (int i = 0; i < 1000; i += 5) {
+            params.set(0, StdRandom.uniform(52) * 5);
+            params.set(1, StdRandom.uniform(52) * 5);
 
             deadlyList.add(new ComplexOomage(params));
         }
