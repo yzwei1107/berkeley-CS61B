@@ -46,9 +46,9 @@ public class QuickSort {
      *                  all of the items in unsorted that are greater than the given pivot.
      */
     private static <Item extends Comparable> void partition(
-            Queue<Item> unsorted, Item pivot,
-            Queue<Item> less, Queue<Item> equal, Queue<Item> greater) {
-        for(Item item : unsorted) {
+        Queue<Item> unsorted, Item pivot,
+        Queue<Item> less, Queue<Item> equal, Queue<Item> greater) {
+        for (Item item : unsorted) {
             int cmp = item.compareTo(pivot);
             if (cmp < 0) {
                 less.enqueue(item);
@@ -84,16 +84,16 @@ public class QuickSort {
                 stack.push(greater);
             }
 
-                stack.push(equal);
+            stack.push(equal);
 
             if (!less.isEmpty()) {
                 stack.push(less);
             }
         }
 
-        Queue<Item> sortedItems = sortedQueues.dequeue();
-        while (!sortedQueues.isEmpty()) {
-            sortedItems = catenate(sortedItems, sortedQueues.dequeue());
+        Queue<Item> sortedItems = new Queue<>();
+        for (Queue<Item> q : sortedQueues) {
+            sortedItems = catenate(sortedItems, q);
         }
 
         return sortedItems;
