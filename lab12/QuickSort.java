@@ -93,7 +93,9 @@ public class QuickSort {
 
         Queue<Item> sortedItems = new Queue<>();
         for (Queue<Item> q : sortedQueues) {
-            sortedItems = catenate(sortedItems, q);
+            while (!q.isEmpty()) {
+                sortedItems.enqueue(q.dequeue());
+            }
         }
 
         return sortedItems;
