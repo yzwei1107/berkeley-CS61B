@@ -1,8 +1,8 @@
+import edu.princeton.cs.algs4.Queue;
+
 /**
  * Class for doing Radix sort
  *
- * @author Akhil Batra
- * @version 1.4 - April 14, 2016
  *
  **/
 public class RadixSort
@@ -18,23 +18,54 @@ public class RadixSort
      *
      * @return String[] the sorted array
      **/
-    public static String[] sort(String[] asciis)
-    {
+    public static String[] sort(String[] asciis) {
+        int maxStringLength = Integer.MIN_VALUE;
+
+        for (String string : asciis) {
+            if (maxStringLength < string.length()) {
+                maxStringLength = string.length();
+            }
+        }
+
+        String[] sortedAsciis = new String[asciis.length];
+        System.arraycopy(asciis, 0, sortedAsciis,0, asciis.length);
+
+        for (int i = 0; i < maxStringLength; i++) {
+            digitSort(sortedAsciis, i);
+        }
+
         return null;
     }
 
-    /**
-     * Radix sort helper function that recursively calls itself to achieve the sorted array
-     *  destructive method that changes the passed in array, asciis
-     *
-     * @param asciis String[] to be sorted
-     * @param start int for where to start sorting in this method (includes String at start)
-     * @param end int for where to end sorting in this method (does not include String at end)
-     * @param index the index of the character the method is currently sorting on
-     *
-     **/
-    private static void sortHelper(String[] asciis, int start, int end, int index)
-    {
-        //TODO use if you want to
+    /* Performs counting sort using digit at the passed in index */
+    private static String[] digitSort(String[] strings, int digitIndex) {
+        Queue<String>[] charToStringTable = new Queue[256];
+
+        int[] charAsciis = new int[strings.length];
+
+        for (int i = 0; i < strings.length; i++) {
+            int asciiToCompare;
+            if (digitIndex >= strings[i].length()) {
+                asciiToCompare = 0;
+            } else {
+                asciiToCompare = (int) strings[i].charAt(strings[i].length() - digitIndex - 1);
+            }
+
+            if (charToStringTable[asciiToCompare] == null) {
+                charToStringTable[asciiToCompare] = new Queue<>();
+            }
+
+            charToStringTable[asciiToCompare].enqueue(strings[i]);
+            charAsciis[i] = asciiToCompare;
+        }
+
+        charAsciis = CountingSort.betterCountingSort(charAsciis);
+
+        for (int i = 0; i < charAsciis.length; i++) {
+            strings[i] = charToStringTable[charAsciis[i]].dequeue();
+        }
+
+        return strings;
     }
+
 }
