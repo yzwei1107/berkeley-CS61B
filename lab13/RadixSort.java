@@ -34,7 +34,7 @@ public class RadixSort
             digitSort(sortedAsciis, i);
         }
 
-        return null;
+        return sortedAsciis;
     }
 
     /* Performs counting sort using digit at the passed in index */
