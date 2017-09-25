@@ -7,7 +7,7 @@ public class SeamCarver {
     private double[][] energyMap;
 
     public SeamCarver(Picture picture) {
-        this.picture = picture;
+        this.picture = new Picture(picture);
         this.energyMap = new double[picture.width()][picture.height()];
         populateEnergyMap();
     }
@@ -85,6 +85,8 @@ public class SeamCarver {
                 neighbour[0] = plusOne(column, width());
                 neighbour[1] = row;
                 break;
+            default:
+                throw new IllegalArgumentException("Direction does not exist");
         }
         return neighbour;
     }
@@ -148,15 +150,15 @@ public class SeamCarver {
 
         int colOfEndMinimumCostPath = 0;
         for (int i = 0; i < width(); i++) {
-            if (minimumCostMatrix[i][height() - 1] <
-                    minimumCostMatrix[colOfEndMinimumCostPath][height() - 1]) {
+            if (minimumCostMatrix[i][height() - 1]
+                    < minimumCostMatrix[colOfEndMinimumCostPath][height() - 1]) {
                 colOfEndMinimumCostPath = i;
             }
         }
 
         int column = colOfEndMinimumCostPath;
         int row = height() - 1;
-
+        verticalSeam[row] = colOfEndMinimumCostPath;
         while (row > 0) {
             verticalSeam[row - 1] = getSeamPredecessor(minimumCostMatrix, column, row);
             row--;
