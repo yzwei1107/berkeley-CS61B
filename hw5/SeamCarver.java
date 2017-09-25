@@ -134,7 +134,7 @@ public class SeamCarver {
 
         for (int i = 0; i < flippedToTheRight.width(); i++) {
             for (int j = 0; j < flippedToTheRight.height(); j++) {
-                Color color = picture.get(j, picture.height() - 1 - i);
+                Color color = picture.get(flippedToTheRight.height() - 1 - j, i);
                 flippedToTheRight.set(i, j, color);
             }
         }
@@ -178,12 +178,12 @@ public class SeamCarver {
                 } else if (i == 0) {
                     minimumPathCost[i][j] = Math.min(
                             minimumPathCost[i][j - 1],
-                            minimumPathCost[i + 1][j - 1])
+                            minimumPathCost[plusOne(i, width())][j - 1])
                             + energyMap[i][j];
 
                 } else if (i == width() - 1) {
                     minimumPathCost[i][j] = Math.min(
-                            minimumPathCost[i - 1][j - 1],
+                            minimumPathCost[minusOne(i, width())][j - 1],
                             minimumPathCost[i][j - 1])
                             + energyMap[i][j];
                 } else {
