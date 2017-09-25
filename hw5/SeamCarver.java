@@ -1,6 +1,7 @@
 import edu.princeton.cs.algs4.Picture;
 
 import java.awt.Color;
+import java.util.Arrays;
 
 public class SeamCarver {
     private Picture picture;
@@ -148,9 +149,9 @@ public class SeamCarver {
 
     private void reverseIntArray(int[] array) {
         int left = 0;
-        int right = array.length -1;
+        int right = array.length - 1;
 
-        while (left != right) {
+        while (left < right) {
             int temp = array[left];
             array[left] = array[right];
             array[right] = temp;
