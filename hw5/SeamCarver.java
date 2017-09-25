@@ -134,13 +134,29 @@ public class SeamCarver {
 
         for (int i = 0; i < rotatedImage.width(); i++) {
             for (int j = 0; j < rotatedImage.height(); j++) {
-                Color color = picture.get(j, rotatedImage.width() - 1 - i);
+                Color color = picture.get(rotatedImage.height() - 1 - j, i);
                 rotatedImage.set(i, j, color);
             }
         }
 
         SeamCarver horizontalCarver = new SeamCarver(rotatedImage);
-        return  horizontalCarver.findVerticalSeam();
+        int[] seam = horizontalCarver.findVerticalSeam();
+
+        reverseIntArray(seam);
+        return seam;
+    }
+
+    private void reverseIntArray(int[] array) {
+        int left = 0;
+        int right = array.length -1;
+
+        while (left != right) {
+            int temp = array[left];
+            array[left] = array[right];
+            array[right] = temp;
+            left++;
+            right--;
+        }
     }
 
     /* Return sequence of indices for vertical seam. */
