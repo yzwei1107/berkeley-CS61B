@@ -110,7 +110,7 @@ public class SeamCarver {
 
     /* Returns the current picture */
     public Picture picture() {
-        return picture;
+        return new Picture(picture);
     }
 
     /* Return the width of the current picture. */
@@ -130,16 +130,16 @@ public class SeamCarver {
 
     /* Return sequence of indices for horizontal seam. */
     public int[] findHorizontalSeam() {
-        Picture flippedToTheRight = new Picture(height(), width());
+        Picture rotatedImage = new Picture(height(), width());
 
-        for (int i = 0; i < flippedToTheRight.width(); i++) {
-            for (int j = 0; j < flippedToTheRight.height(); j++) {
-                Color color = picture.get(flippedToTheRight.height() - 1 - j, i);
-                flippedToTheRight.set(i, j, color);
+        for (int i = 0; i < rotatedImage.width(); i++) {
+            for (int j = 0; j < rotatedImage.height(); j++) {
+                Color color = picture.get(j, rotatedImage.width() - 1 - i);
+                rotatedImage.set(i, j, color);
             }
         }
 
-        SeamCarver horizontalCarver = new SeamCarver(flippedToTheRight);
+        SeamCarver horizontalCarver = new SeamCarver(rotatedImage);
         return  horizontalCarver.findVerticalSeam();
     }
 
@@ -200,17 +200,19 @@ public class SeamCarver {
     /* Returns the column of the preceding pixel in the seam */
     private int getSeamPredecessor(double[][] minimumCostMatrix, int column, int row) {
         if (column == 0) {
+            if (column == width() - 1) {
+                return column;
+            }
             if (minimumCostMatrix[column][row - 1] < minimumCostMatrix[column + 1][row - 1]) {
                 return column;
-            } else {
-                return column + 1;
             }
+            return column + 1;
+
         } else if (column == width() - 1) {
             if (minimumCostMatrix[column - 1][row - 1] < minimumCostMatrix[column][row - 1]) {
                 return column - 1;
-            } else {
-                return column;
             }
+            return column;
         } else {
             double minCost = Math.min(
                     Math.min(minimumCostMatrix[column - 1][row - 1],
