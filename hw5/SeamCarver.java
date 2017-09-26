@@ -1,7 +1,6 @@
 import edu.princeton.cs.algs4.Picture;
 
 import java.awt.Color;
-import java.util.Arrays;
 
 public class SeamCarver {
     private Picture picture;
@@ -43,8 +42,8 @@ public class SeamCarver {
         differenceBlueX = Math.abs(picture.get(leftNeighbour[0], leftNeighbour[1]).getBlue()
                 - picture.get(rightNeighbour[0], rightNeighbour[1]).getBlue());
 
-        xComponentEnergy = Math.pow(differenceRedX, 2) + Math.pow(differenceGreenX, 2)
-                + Math.pow(differenceBlueX, 2);
+        xComponentEnergy = differenceRedX * differenceRedX + differenceGreenX * differenceGreenX
+                + differenceBlueX * differenceBlueX;
 
 
         differenceRedY = Math.abs(picture.get(topNeighbour[0], topNeighbour[1]).getRed()
@@ -58,8 +57,8 @@ public class SeamCarver {
                 - picture.get(bottomNeighbour[0], bottomNeighbour[1]).getBlue());
 
 
-        yComponentEnergy = Math.pow(differenceRedY, 2) + Math.pow(differenceGreenY, 2)
-                + Math.pow(differenceBlueY, 2);
+        yComponentEnergy = differenceRedY * differenceRedY + differenceGreenY * differenceGreenY
+                + differenceBlueY * differenceBlueY;
 
         return xComponentEnergy + yComponentEnergy;
     }
