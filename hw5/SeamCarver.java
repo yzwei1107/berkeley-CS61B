@@ -32,30 +32,37 @@ public class SeamCarver {
         int[] rightNeighbour = neighbour(column, row, Direction.RIGHT);
 
 
-        differenceRedX = Math.abs(picture.get(leftNeighbour[0], leftNeighbour[1]).getRed()
-                - picture.get(rightNeighbour[0], rightNeighbour[1]).getRed());
+        differenceRedX = picture.get(leftNeighbour[0], leftNeighbour[1]).getRed()
+                - picture.get(rightNeighbour[0], rightNeighbour[1]).getRed();
 
-        differenceGreenX = Math.abs(picture.get(leftNeighbour[0], leftNeighbour[1]).getGreen()
-                - picture.get(rightNeighbour[0], rightNeighbour[1]).getGreen());
+        differenceGreenX = picture.get(leftNeighbour[0], leftNeighbour[1]).getGreen()
+                - picture.get(rightNeighbour[0], rightNeighbour[1]).getGreen();
 
+        differenceBlueX = picture.get(leftNeighbour[0], leftNeighbour[1]).getBlue()
+                - picture.get(rightNeighbour[0], rightNeighbour[1]).getBlue();
 
-        differenceBlueX = Math.abs(picture.get(leftNeighbour[0], leftNeighbour[1]).getBlue()
-                - picture.get(rightNeighbour[0], rightNeighbour[1]).getBlue());
+        differenceRedX = differenceRedX < 0 ? differenceRedX * -1 : differenceRedX;
+        differenceGreenX = differenceGreenX < 0 ? differenceGreenX * -1 : differenceGreenX;
+        differenceBlueX = differenceBlueX < 0 ? differenceBlueX * -1 : differenceBlueX;
 
         xComponentEnergy = differenceRedX * differenceRedX + differenceGreenX * differenceGreenX
                 + differenceBlueX * differenceBlueX;
 
 
-        differenceRedY = Math.abs(picture.get(topNeighbour[0], topNeighbour[1]).getRed()
-                - picture.get(bottomNeighbour[0], bottomNeighbour[1]).getRed());
+        differenceRedY = picture.get(topNeighbour[0], topNeighbour[1]).getRed()
+                - picture.get(bottomNeighbour[0], bottomNeighbour[1]).getRed();
 
-        differenceGreenY = Math.abs(picture.get(topNeighbour[0], topNeighbour[1]).getGreen()
-                - picture.get(bottomNeighbour[0], bottomNeighbour[1]).getGreen());
+        differenceGreenY = picture.get(topNeighbour[0], topNeighbour[1]).getGreen()
+                - picture.get(bottomNeighbour[0], bottomNeighbour[1]).getGreen();
 
 
-        differenceBlueY = Math.abs(picture.get(topNeighbour[0], topNeighbour[1]).getBlue()
-                - picture.get(bottomNeighbour[0], bottomNeighbour[1]).getBlue());
+        differenceBlueY = picture.get(topNeighbour[0], topNeighbour[1]).getBlue()
+                - picture.get(bottomNeighbour[0], bottomNeighbour[1]).getBlue();
 
+
+        differenceRedY = differenceRedY < 0 ? differenceRedY * -1 : differenceRedY;
+        differenceGreenY = differenceGreenY < 0 ? differenceGreenY * -1 : differenceGreenY;
+        differenceBlueY = differenceBlueY < 0 ? differenceBlueY * -1 : differenceBlueY;
 
         yComponentEnergy = differenceRedY * differenceRedY + differenceGreenY * differenceGreenY
                 + differenceBlueY * differenceBlueY;
