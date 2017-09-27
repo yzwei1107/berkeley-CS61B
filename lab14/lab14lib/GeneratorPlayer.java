@@ -1,5 +1,5 @@
 package lab14lib;
-import edu.princeton.cs.introcs.StdAudio;
+import edu.princeton.cs.algs4.StdAudio;
 
 public class GeneratorPlayer {
 	private Generator generator;
