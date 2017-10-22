@@ -1,7 +1,6 @@
 import db.Table;
 import db.Type;
 
-import javafx.scene.control.Tab;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 

@@ -34,11 +34,11 @@ public class Table {
         columnTypes.add(type);
 
         if (type == Type.FLOAT) {
-            columns.add(new Column<Double>());
+            columns.add(new Column<Double>(columnName, type));
         } else if (type == Type.INT) {
-            columns.add(new Column<Integer>());
+            columns.add(new Column<Integer>(columnName, type));
         } else if (type == Type.STRING) {
-            columns.add(new Column<String>());
+            columns.add(new Column<String>(columnName, type));
         } else {
             throw new IllegalArgumentException("Invalid type");
         }
@@ -82,14 +82,10 @@ public class Table {
         sb.setLength(sb.length() - 1);
         sb.append("\n");
 
-        for (int i = 0; i < columns.get(0).size(); i++) {
-            for (int j = 0; j < columns.size(); j++) {
-                Column column = columns.get(j);
-                if (columnTypes.get(j) == Type.STRING) {
-                    sb.append("'").append(column.get(i)).append("',");
-                } else {
-                    sb.append(column.get(i)).append(",");
-                }
+        for (int row = 0; row < columns.get(0).size(); row++) {
+            for (int col = 0; col < columns.size(); col++) {
+                Column column = columns.get(col);
+                sb.append(column.getItemString(row)).append(",");
             }
             sb.setLength(sb.length() - 1);
             sb.append("\n");
@@ -209,6 +205,11 @@ public class Table {
             Column t1Column = t1.columns.get(t1.nameToIndexMap.get(sharedColumnName));
             Column t2Column = t2.columns.get(t2.nameToIndexMap.get(sharedColumnName));
 
+            if  (t1Column.isNOVALUE(t1Row) || t1Column.isNaN(t1Row)
+                    || t2Column.isNOVALUE(t2Row) || t2Column.isNaN(t2Row)) {
+                return false;
+            }
+
             if (!t1Column.get(t1Row).equals(t2Column.get(t2Row))) {
                 return false;
             }
@@ -225,10 +226,22 @@ public class Table {
             String joinedColumnName = joined.columnNames.get(i);
             if (t1.columnNames.contains(joinedColumnName)) {
                 Column relevantColumn = t1.columns.get(t1.nameToIndexMap.get(joinedColumnName));
-                row.add(relevantColumn.get(t1Row).toString());
+                if (relevantColumn.isNaN(t1Row)) {
+                    row.add("NaN");
+                } else if (relevantColumn.isNOVALUE(t1Row)) {
+                    row.add("NOVALUE");
+                } else {
+                    row.add(relevantColumn.get(t1Row).toString());
+                }
             } else {
                 Column relevantColumn = t2.columns.get(t2.nameToIndexMap.get(joinedColumnName));
-                row.add(relevantColumn.get(t2Row).toString());
+                if (relevantColumn.isNaN(t2Row)) {
+                    row.add("NaN");
+                } else if (relevantColumn.isNOVALUE(t2Row)) {
+                    row.add("NOVALUE");
+                } else {
+                    row.add(relevantColumn.get(t2Row).toString());
+                }
             }
 
         }
