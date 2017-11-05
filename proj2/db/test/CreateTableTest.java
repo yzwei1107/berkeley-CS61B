@@ -1,3 +1,5 @@
+package comparison;
+
 import db.Table;
 import db.Type;
 
