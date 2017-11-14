@@ -7,5 +7,6 @@ import db.Column;
  */
 
 public interface Operation {
-    Column operate(String columnName);
+    Column operation(String columnName, Column column, String literal);
+    Column operation(String columnName, Column c1, Column c2);
 }

@@ -12,19 +12,21 @@ import java.util.regex.Pattern;
 public abstract class AbstractComparison implements Comparison {
 
     /* Compares every row of the column to a literal. */
-    public boolean compare(Column column, String literal) {
+    @Override
+    public boolean compare(Column column, String literal, int row) {
         if (columnAndLiteralAreNumeric(column, literal)) {
-            return compareToNumber(column, Double.parseDouble(literal));
+            return compareToNumber(column, Double.parseDouble(literal), row);
         }
-        return compareToString(column, literal);
+        return compareToString(column, literal, row);
     }
 
     /* Compares two columns, row by row. */
-    public boolean compare(Column c1, Column c2) {
+    @Override
+    public boolean compare(Column c1, Column c2, int row) {
         if (containNumbers(c1, c2)) {
-            return compareNumericColumns(c1, c2);
+            return compareNumericColumns(c1, c2, row);
         }
-        return compareStringColumns(c1, c2);
+        return compareStringColumns(c1, c2, row);
     }
 
     /* Returns true if both columns contain floats or integers, false otherwise. */
@@ -46,14 +48,14 @@ public abstract class AbstractComparison implements Comparison {
     }
 
     /* Compares every row of the column to a float or integer. */
-    protected abstract boolean compareToNumber(Column column, Double literal);
+    protected abstract boolean compareToNumber(Column column, Double literal, int row);
 
     /* Compares every row of the column to a string. */
-    protected abstract boolean compareToString(Column<String> column, String literal);
+    protected abstract boolean compareToString(Column<String> column, String literal, int row);
 
     /* Compares two columns containing floats or integers row-by-row. */
-    protected abstract boolean compareNumericColumns(Column c1, Column c2);
+    protected abstract boolean compareNumericColumns(Column c1, Column c2, int row);
 
     /* Compares two columns containing strings row-by-row. */
-    protected abstract boolean compareStringColumns(Column<String> c1, Column<String> c2);
+    protected abstract boolean compareStringColumns(Column<String> c1, Column<String> c2, int row);
 }

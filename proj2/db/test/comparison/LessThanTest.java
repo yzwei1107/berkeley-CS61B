@@ -21,12 +21,13 @@ public class LessThanTest {
         c2Int.add(Type.NAN);
 
         LessThan lessThan = new LessThan();
-        assertTrue(lessThan.compare(c1Double, c2Int));
+        assertTrue(lessThan.compare(c1Double, c2Int, 0));
+        assertTrue(lessThan.compare(c1Double, c2Int, 1));
 
         c1Double.add(15.0);
         c2Int.add(12);
 
-        assertFalse(lessThan.compare(c1Double, c2Int));
+        assertFalse(lessThan.compare(c1Double, c2Int, 2));
 
 
         Column<Integer> c1Int = new Column<>("c1", Type.INT);
@@ -34,11 +35,13 @@ public class LessThanTest {
         c1Int.add(44);
         c1Int.add(10);
 
-        assertTrue(lessThan.compare(c1Int, c2Int));
+        assertTrue(lessThan.compare(c1Int, c2Int, 0));
+        assertTrue(lessThan.compare(c1Int, c2Int, 1));
+        assertTrue(lessThan.compare(c1Int, c2Int, 2));
 
         c1Int.add(Type.NAN);
         c2Int.add(Type.NOVALUE);
-        assertFalse(lessThan.compare(c1Int, c2Int));
+        assertFalse(lessThan.compare(c1Int, c2Int, 3));
 
 
         Column<String> c1String = new Column<>("c1", Type.STRING);
@@ -49,12 +52,13 @@ public class LessThanTest {
         c2String.add("Zoo");
         c2String.add("Gao");
 
-        assertTrue(lessThan.compare(c1String, c2String));
+        assertTrue(lessThan.compare(c1String, c2String, 0));
+        assertTrue(lessThan.compare(c1String, c2String, 1));
 
         c1String.add("Is");
         c2String.add("As");
 
-        assertFalse(lessThan.compare(c1String, c2String));
+        assertFalse(lessThan.compare(c1String, c2String, 2));
     }
 
     @Test
@@ -64,31 +68,28 @@ public class LessThanTest {
         Column<Double> colDouble = new Column<>("col", Type.FLOAT);
         colDouble.add(2.0);
         colDouble.add(1.0);
-        colDouble.add(5.0);
 
         LessThan lessThan = new LessThan();
-        assertTrue(lessThan.compare(colDouble, litDouble));
-        assertTrue(lessThan.compare(colDouble, litInt));
+        assertTrue(lessThan.compare(colDouble, litDouble, 0));
+        assertTrue(lessThan.compare(colDouble, litInt, 1));
 
         colDouble.add(15.0);
 
-        assertFalse(lessThan.compare(colDouble, litDouble));
-        assertFalse(lessThan.compare(colDouble, litInt));
+        assertFalse(lessThan.compare(colDouble, litDouble, 2));
+        assertFalse(lessThan.compare(colDouble, litInt, 2));
 
         litDouble = "153.3";
         litInt = "153";
         Column<Integer> colInt = new Column<>("col", Type.INT);
         colInt.add(142);
-        colInt.add(142);
-        colInt.add(142);
 
-        assertTrue(lessThan.compare(colInt, litDouble));
-        assertTrue(lessThan.compare(colInt, litInt));
+        assertTrue(lessThan.compare(colInt, litDouble, 0));
+        assertTrue(lessThan.compare(colInt, litInt, 0));
 
         colInt.add(Type.NOVALUE);
 
-        assertFalse(lessThan.compare(colInt, litDouble));
-        assertFalse(lessThan.compare(colInt, litInt));
+        assertFalse(lessThan.compare(colInt, litDouble, 1));
+        assertFalse(lessThan.compare(colInt, litInt, 1));
 
 
         String litStr = "Morse";
@@ -97,10 +98,12 @@ public class LessThanTest {
         colStr.add("More");
         colStr.add("Door");
 
-        assertTrue(lessThan.compare(colStr, litStr));
+        assertTrue(lessThan.compare(colStr, litStr, 0));
+        assertTrue(lessThan.compare(colStr, litStr, 1));
+        assertTrue(lessThan.compare(colStr, litStr, 2));
 
         colStr.add("Morse");
 
-        assertFalse(lessThan.compare(colStr, litStr));
+        assertFalse(lessThan.compare(colStr, litStr, 3));
     }
 }

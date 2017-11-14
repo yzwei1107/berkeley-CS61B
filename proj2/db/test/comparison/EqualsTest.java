@@ -21,14 +21,15 @@ public class EqualsTest {
         c2Int.add(Type.NAN);
 
         Equals equalCheck = new Equals();
-        assertTrue(equalCheck.compare(c1Double, c2Int));
+        assertTrue(equalCheck.compare(c1Double, c2Int, 0));
+        assertTrue(equalCheck.compare(c1Double, c2Int, 1));
 
         c1Double.add(Type.NOVALUE);
         c1Double.add(Type.NAN);
         c1Double.add(Type.NOVALUE);
         c2Int.add(12);
 
-        assertFalse(equalCheck.compare(c1Double, c2Int));
+        assertFalse(equalCheck.compare(c1Double, c2Int, 2));
 
 
         Column<Integer> c1Int = new Column<>("c1", Type.INT);
@@ -36,27 +37,27 @@ public class EqualsTest {
         c1Int.add(Type.NAN);
         c1Int.add(12);
 
-        assertTrue(equalCheck.compare(c1Int, c2Int));
+        assertTrue(equalCheck.compare(c1Int, c2Int, 0));
+        assertTrue(equalCheck.compare(c1Int, c2Int, 1));
+        assertTrue(equalCheck.compare(c1Int, c2Int, 2));
 
         c1Int.add(15);
         c2Int.add(52);
-        assertFalse(equalCheck.compare(c1Int, c2Int));
+        assertFalse(equalCheck.compare(c1Int, c2Int, 3));
 
 
         Column<String> c1String = new Column<>("c1", Type.STRING);
         Column<String> c2String = new Column<>("c2", Type.STRING);
         c1String.add("Foo");
-        c1String.add(Type.NAN);
 
         c2String.add("Foo");
-        c2String.add(Type.NAN);
 
-        assertTrue(equalCheck.compare(c1String, c2String));
+        assertTrue(equalCheck.compare(c1String, c2String, 0));
 
         c1String.add("Is");
         c2String.add("As");
 
-        assertFalse(equalCheck.compare(c1String, c2String));
+        assertFalse(equalCheck.compare(c1String, c2String, 1));
     }
 
     @Test
@@ -69,13 +70,13 @@ public class EqualsTest {
         colDouble.add(12.0);
 
         Equals equals = new Equals();
-        assertTrue(equals.compare(colDouble, litDouble));
-        assertTrue(equals.compare(colDouble, litInt));
+        assertTrue(equals.compare(colDouble, litDouble, 0));
+        assertTrue(equals.compare(colDouble, litInt, 1));
 
         colDouble.add(Type.NAN);
 
-        assertFalse(equals.compare(colDouble, litDouble));
-        assertFalse(equals.compare(colDouble, litInt));
+        assertFalse(equals.compare(colDouble, litDouble, 3));
+        assertFalse(equals.compare(colDouble, litInt, 3));
 
 
         litDouble = "142.0";
@@ -85,26 +86,24 @@ public class EqualsTest {
         colInt.add(142);
         colInt.add(142);
 
-        assertTrue(equals.compare(colInt, litDouble));
-        assertTrue(equals.compare(colInt, litInt));
+        assertTrue(equals.compare(colInt, litDouble, 0));
+        assertTrue(equals.compare(colInt, litInt, 1));
 
         colInt.add(Type.NOVALUE);
 
-        assertFalse(equals.compare(colInt, litDouble));
-        assertFalse(equals.compare(colInt, litInt));
+        assertFalse(equals.compare(colInt, litDouble, 3));
+        assertFalse(equals.compare(colInt, litInt, 3));
 
 
         String litStr = "Morse";
         Column<String> colStr = new Column<>("col", Type.STRING);
         colStr.add("Morse");
-        colStr.add("Morse");
-        colStr.add("Morse");
 
-        assertTrue(equals.compare(colStr, litStr));
+        assertTrue(equals.compare(colStr, litStr, 0));
 
         colStr.add("Foo");
 
-        assertFalse(equals.compare(colStr, litStr));
+        assertFalse(equals.compare(colStr, litStr, 1));
     }
 
 }

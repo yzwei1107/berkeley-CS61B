@@ -7,6 +7,6 @@ import db.Column;
  */
 
 public interface Comparison {
-    boolean compare(Column column, String literal);
-    boolean compare(Column c1, Column c2);
+    boolean compare(Column column, String literal, int row);
+    boolean compare(Column c1, Column c2, int row);
 }

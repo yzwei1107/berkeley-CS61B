@@ -21,12 +21,13 @@ public class LessOrEqualToTest {
         c2Int.add(Type.NAN);
 
         LessOrEqualTo lessOrEqualTo = new LessOrEqualTo();
-        assertTrue(lessOrEqualTo.compare(c1Double, c2Int));
+        assertTrue(lessOrEqualTo.compare(c1Double, c2Int, 0));
+        assertTrue(lessOrEqualTo.compare(c1Double, c2Int, 1));
 
         c1Double.add(15.0);
         c2Int.add(12);
 
-        assertFalse(lessOrEqualTo.compare(c1Double, c2Int));
+        assertFalse(lessOrEqualTo.compare(c1Double, c2Int, 2));
 
 
         Column<Integer> c1Int = new Column<>("c1", Type.INT);
@@ -34,11 +35,14 @@ public class LessOrEqualToTest {
         c1Int.add(44);
         c1Int.add(10);
 
-        assertTrue(lessOrEqualTo.compare(c1Int, c2Int));
+        assertTrue(lessOrEqualTo.compare(c1Int, c2Int, 0));
+        assertTrue(lessOrEqualTo.compare(c1Int, c2Int, 1));
+        assertTrue(lessOrEqualTo.compare(c1Int, c2Int, 2));
 
         c1Int.add(Type.NAN);
         c2Int.add(Type.NOVALUE);
-        assertFalse(lessOrEqualTo.compare(c1Int, c2Int));
+        assertFalse(lessOrEqualTo.compare(c1Int, c2Int, 3));
+        assertFalse(lessOrEqualTo.compare(c1Int, c2Int, 3));
 
 
         Column<String> c1String = new Column<>("c1", Type.STRING);
@@ -49,12 +53,13 @@ public class LessOrEqualToTest {
         c2String.add("Foo");
         c2String.add("Gao");
 
-        assertTrue(lessOrEqualTo.compare(c1String, c2String));
+        assertTrue(lessOrEqualTo.compare(c1String, c2String, 0));
+        assertTrue(lessOrEqualTo.compare(c1String, c2String, 1));
 
         c1String.add("Is");
         c2String.add("As");
 
-        assertFalse(lessOrEqualTo.compare(c1String, c2String));
+        assertFalse(lessOrEqualTo.compare(c1String, c2String, 2));
     }
 
     @Test
@@ -64,31 +69,29 @@ public class LessOrEqualToTest {
         Column<Double> colDouble = new Column<>("col", Type.FLOAT);
         colDouble.add(12.0);
         colDouble.add(1.0);
-        colDouble.add(5.0);
 
         LessOrEqualTo lessOrEqualTo = new LessOrEqualTo();
-        assertTrue(lessOrEqualTo.compare(colDouble, litDouble));
-        assertTrue(lessOrEqualTo.compare(colDouble, litInt));
+        assertTrue(lessOrEqualTo.compare(colDouble, litDouble, 0));
+        assertTrue(lessOrEqualTo.compare(colDouble, litInt, 1));
 
         colDouble.add(15.0);
 
-        assertFalse(lessOrEqualTo.compare(colDouble, litDouble));
-        assertFalse(lessOrEqualTo.compare(colDouble, litInt));
+        assertFalse(lessOrEqualTo.compare(colDouble, litDouble, 2));
+        assertFalse(lessOrEqualTo.compare(colDouble, litInt, 2));
 
         litDouble = "153.3";
         litInt = "153";
         Column<Integer> colInt = new Column<>("col", Type.INT);
         colInt.add(153);
         colInt.add(142);
-        colInt.add(142);
 
-        assertTrue(lessOrEqualTo.compare(colInt, litDouble));
-        assertTrue(lessOrEqualTo.compare(colInt, litInt));
+        assertTrue(lessOrEqualTo.compare(colInt, litDouble, 0));
+        assertTrue(lessOrEqualTo.compare(colInt, litInt, 1));
 
         colInt.add(Type.NOVALUE);
 
-        assertFalse(lessOrEqualTo.compare(colInt, litDouble));
-        assertFalse(lessOrEqualTo.compare(colInt, litInt));
+        assertFalse(lessOrEqualTo.compare(colInt, litDouble, 2));
+        assertFalse(lessOrEqualTo.compare(colInt, litInt, 2));
 
 
         String litStr = "Morse";
@@ -97,10 +100,12 @@ public class LessOrEqualToTest {
         colStr.add("Morse");
         colStr.add("Door");
 
-        assertTrue(lessOrEqualTo.compare(colStr, litStr));
+        assertTrue(lessOrEqualTo.compare(colStr, litStr, 0));
+        assertTrue(lessOrEqualTo.compare(colStr, litStr, 1));
+        assertTrue(lessOrEqualTo.compare(colStr, litStr, 2));
 
         colStr.add("Poor");
 
-        assertFalse(lessOrEqualTo.compare(colStr, litStr));
+        assertFalse(lessOrEqualTo.compare(colStr, litStr, 3));
     }
 }
