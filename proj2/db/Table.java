@@ -1,5 +1,7 @@
 package db;
 
+import db.comparison.*;
+import db.operation.*;
 import edu.princeton.cs.algs4.Stack;
 
 import java.util.ArrayList;
@@ -17,21 +19,39 @@ public class Table {
     private ArrayList<String> columnNames;
     private ArrayList<Type> columnTypes;
     private ArrayList<Column> columns;
-    private HashMap<String, Integer> nameToIndexMap;
+    private HashMap<String, Integer> colNameToIndex;
+    private int numColumns;
 
     public Table(String name) {
         this.name = name;
         this.columnNames = new ArrayList<>();
         this.columnTypes = new ArrayList<>();
         this.columns = new ArrayList<>();
-        this.nameToIndexMap = new HashMap<>();
+        this.colNameToIndex = new HashMap<>();
 
+    }
+
+    public Table(Table otherTable) {
+        this.name = otherTable.name;
+        this.columnNames = new ArrayList<>(otherTable.columnNames);
+        this.columnTypes = new ArrayList<>(otherTable.columnTypes);
+        this.columns = new ArrayList<>();
+        this.colNameToIndex = new HashMap<>(otherTable.colNameToIndex);
+
+        for (int i = 0; i < otherTable.columns.size(); i++) {
+            this.columns.add(new Column(otherTable.columns.get(i)));
+        }
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /* Adds column to table. */
     public void addColumn(String columnName, Type type) {
         columnNames.add(columnName);
         columnTypes.add(type);
+        numColumns++;
 
         if (type == Type.FLOAT) {
             columns.add(new Column<Double>(columnName, type));
@@ -42,7 +62,21 @@ public class Table {
         } else {
             throw new IllegalArgumentException("Invalid type");
         }
-        nameToIndexMap.put(columnName, columns.size() - 1);
+        colNameToIndex.put(columnName, columns.size() - 1);
+    }
+
+    /* Removes column with the specified name if found */
+    public void removeColumn(String columnName) {
+        if (!containsColumn(columnName)) {
+            return;
+        }
+
+        int index = colNameToIndex.get(columnName);
+        colNameToIndex.remove(columnName);
+        columnNames.remove(index);
+        columnTypes.remove(index);
+        columns.remove(index);
+        numColumns--;
     }
 
     /* Adds row to table. */
@@ -51,16 +85,35 @@ public class Table {
             Type columnType = columnTypes.get(i);
             Column column = columns.get(i);
 
-            if (columnType == Type.FLOAT) {
-                column.add(Double.parseDouble(row.get(i)));
-            } else if (columnType == Type.INT) {
-                column.add(Integer.parseInt(row.get(i)));
-            } else if (columnType == Type.STRING) {
-                column.add(row.get(i));
-            } else {
-                throw new IllegalArgumentException("Invalid type");
+            if (row.get(i).equals("NOVALUE")) {
+                column.add(Type.NOVALUE);
+            }
+
+            switch (columnType) {
+                case FLOAT:
+                    column.add(Double.parseDouble(row.get(i)));
+                    break;
+                case INT:
+                    column.add(Integer.parseInt(row.get(i)));
+                    break;
+                default:
+                    column.add(row.get(i));
             }
         }
+    }
+
+    /* Returns number of columns. */
+    public int getNumColumns() {
+        return numColumns;
+    }
+
+    public String getColumnName(int index) {
+        return columnNames.get(index);
+    }
+
+    /* Returns type of column at specified index. */
+    public Type getColumnType(int index) {
+        return columnTypes.get(index);
     }
 
     public boolean isEmpty() {
@@ -98,6 +151,10 @@ public class Table {
 
     /* Joins a list of tables from left to right and returns the final table. */
     public static Table join(String name, List<Table> tableList) {
+        if (tableList.size() == 1) {
+            return new Table(tableList.get(0));
+        }
+
         Stack<Table> tableStack = joinMultipleTableHelper(tableList);
 
         while (tableStack.size() > 1) {
@@ -202,8 +259,8 @@ public class Table {
     private static boolean canMergeRows(Table t1, Table t2, List<String> sharedColumnNames,
                                        int t1Row, int t2Row) {
         for (String sharedColumnName : sharedColumnNames) {
-            Column t1Column = t1.columns.get(t1.nameToIndexMap.get(sharedColumnName));
-            Column t2Column = t2.columns.get(t2.nameToIndexMap.get(sharedColumnName));
+            Column t1Column = t1.columns.get(t1.colNameToIndex.get(sharedColumnName));
+            Column t2Column = t2.columns.get(t2.colNameToIndex.get(sharedColumnName));
 
             if  (t1Column.isNOVALUE(t1Row) || t1Column.isNaN(t1Row)
                     || t2Column.isNOVALUE(t2Row) || t2Column.isNaN(t2Row)) {
@@ -225,7 +282,7 @@ public class Table {
         for (int i = 0; i < joined.columns.size(); i++) {
             String joinedColumnName = joined.columnNames.get(i);
             if (t1.columnNames.contains(joinedColumnName)) {
-                Column relevantColumn = t1.columns.get(t1.nameToIndexMap.get(joinedColumnName));
+                Column relevantColumn = t1.columns.get(t1.colNameToIndex.get(joinedColumnName));
                 if (relevantColumn.isNaN(t1Row)) {
                     row.add("NaN");
                 } else if (relevantColumn.isNOVALUE(t1Row)) {
@@ -234,7 +291,7 @@ public class Table {
                     row.add(relevantColumn.get(t1Row).toString());
                 }
             } else {
-                Column relevantColumn = t2.columns.get(t2.nameToIndexMap.get(joinedColumnName));
+                Column relevantColumn = t2.columns.get(t2.colNameToIndex.get(joinedColumnName));
                 if (relevantColumn.isNaN(t2Row)) {
                     row.add("NaN");
                 } else if (relevantColumn.isNOVALUE(t2Row)) {
@@ -249,32 +306,59 @@ public class Table {
         return row;
     }
 
-    public static void main(String[] args) {
-        Table table = new Table("table");
-        table.addColumn("Name", Type.STRING);
-        table.addColumn("Age", Type.INT);
-        table.addColumn("Height", Type.FLOAT);
-
-        List<String> row1 = new ArrayList<>();
-        row1.add("Harold");
-        row1.add("19");
-        row1.add("1.75");
-
-        List<String> row2 = new ArrayList<>();
-        row2.add("Mike");
-        row2.add("29");
-        row2.add("1.79");
-
-        List<String> row3 = new ArrayList<>();
-        row3.add("Arnold");
-        row3.add("42");
-        row3.add("1.83");
-
-        table.addRow(row1);
-        table.addRow(row2);
-        table.addRow(row3);
-
-        System.out.println(table);
+    public boolean containsColumn(String columnName) {
+        return colNameToIndex.containsKey(columnName);
     }
 
+    public void makeTableCompliant(Comparison comparison, String[] condition) {
+        int colIndex = colNameToIndex.get(condition[0]);
+        Column c1 = columns.get(colIndex);
+
+        if (containsColumn(condition[2])) {
+            Column c2 = columns.get(colNameToIndex.get(condition[2]));
+
+            for (int i = 0; i < c1.size(); i++) {
+                if (!comparison.compare(c1, c2, i)) {
+                    removeRow(i);
+                }
+            }
+        } else {
+            for (int i = 0; i < c1.size(); i++) {
+                if (!comparison.compare(c1, condition[2], i)) {
+                    removeRow(i);
+                }
+            }
+        }
+    }
+
+    private void removeRow(int index) {
+        for (int i = 0; i < columns.size(); i++) {
+            columns.get(i).remove(index);
+        }
+    }
+
+
+    public void evaluateArithmeticExpression(Table joined, Operation operation, String[] arithmeticExpr) {
+        Column c1 = joined.columns.get(joined.colNameToIndex.get(arithmeticExpr[0]));
+
+        Column result;
+        if (joined.containsColumn(arithmeticExpr[2])) {
+            Column c2 = joined.columns.get(joined.colNameToIndex.get(arithmeticExpr[2]));
+            result = operation.operation(arithmeticExpr[4], c1, c2);
+        } else {
+            result = operation.operation(arithmeticExpr[4], c1, arithmeticExpr[2]);
+        }
+
+        this.columnNames.add(result.getName());
+        this.columnTypes.add(result.getType());
+        this.columns.add(result);
+    }
+
+    public void addColumnFromTable(Table otherTable, String columnName) {
+        int index = otherTable.colNameToIndex.get(columnName);
+        this.columns.add(new Column(otherTable.columns.get(index)));
+        this.columnTypes.add(otherTable.columnTypes.get(index));
+        this.columnNames.add(otherTable.columnNames.get(index));
+        this.colNameToIndex.put(columnName, this.columns.size() - 1);
+    }
 }

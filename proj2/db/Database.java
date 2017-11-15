@@ -1,11 +1,327 @@
 package db;
 
+import db.comparison.*;
+import db.operation.*;
+
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.regex.Pattern;
+
 public class Database {
+
+    private final String FLOAT_PATTERN = "([0-9].*)\\.([0-9].*)";
+    private final String INT_PATTERN = "\\d+";
+    private final String STRING_PATTERN = "'.*'";
+
+    private HashMap<String, Table> tableMap;
+
     public Database() {
-        // YOUR CODE HERE
+        tableMap = new HashMap<>();
     }
 
     public String transact(String query) {
-        return "YOUR CODE HERE";
+        return CommandParser.eval(query, this);
     }
+
+    public String createNewTable(String name, List<String> colNames, List<String> colTypes) {
+        if (tableMap.containsKey(name)) {
+            return "ERROR: Table with the name " + name + " already exists.";
+        }
+
+        Table table = new Table(name);
+
+        for (int i = 0; i < colNames.size(); i++) {
+            Type colType;
+            switch (colTypes.get(i)) {
+                case "float":
+                    colType = Type.FLOAT;
+                    break;
+                case "int":
+                    colType = Type.INT;
+                    break;
+                default:
+                    colType = Type.STRING;
+                    break;
+            }
+
+            table.addColumn(colNames.get(i), colType);
+        }
+
+        tableMap.put(name, table);
+
+        return "";
+    }
+
+    public String createSelectedTable(String name, String[] exprs,
+                                      String[] tableNames, String[] conds) {
+        Table selectedTable = getSelectedTable(exprs, tableNames, conds);
+        if (selectedTable == null) {
+            return "";
+        }
+
+        selectedTable.setName(name);
+        tableMap.put(name, selectedTable);
+        return "";
+    }
+
+    /* Inserts row in table of provided name */
+    public String insertRow(String tableName, String[] rowArray) {
+        if (!tableMap.containsKey(tableName)) {
+            return "ERROR: Table " + tableName + " could not be found";
+        }
+
+        Table table = tableMap.get(tableName);
+        ArrayList<String> rowList = new ArrayList<>();
+
+        if (rowArray.length != table.getNumColumns()) {
+            return "ERROR: Row size different from number of columns in table.";
+        }
+
+        for (int i = 0; i < rowArray.length; i++) {
+            boolean isNOVALUE = rowArray[i].equals("NOVALUE");
+            switch (table.getColumnType(i)) {
+                case FLOAT:
+                    String floatPattern = "([0-9].*)\\.([0-9].*)";
+                    boolean literalIsFloat = Pattern.matches(floatPattern, rowArray[i]);
+
+                    if (!isNOVALUE && (!literalIsFloat || rowArray[i].contains("'"))) {
+                        return "ERROR: Could not find float at index " + i + " of the row.";
+                    }
+
+                    break;
+
+                case INT:
+                    String intPattern = "\\d+";
+                    boolean literalIsInt = Pattern.matches(intPattern, rowArray[i]);
+
+                    if (!isNOVALUE && (!literalIsInt || rowArray[i].contains("'"))) {
+                        return "ERROR: Could not find int at index " + i + " of the row.";
+                    }
+
+                    break;
+
+                case STRING:
+                    String stringPattern = "'.*'";
+                    boolean literalIsString = Pattern.matches(stringPattern, rowArray[i]);
+                    if (!isNOVALUE && !literalIsString) {
+                        return "ERROR: Could not find string at index " + i + " of the row.";
+                    }
+
+                    if (!isNOVALUE) {
+                        // Remove single quotes from string.
+                        rowArray[i] = rowArray[i].substring(1, rowArray[i].length() - 1);
+                    }
+
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Illegal column type");
+            }
+
+            rowList.add(rowArray[i]);
+        }
+
+        table.addRow(rowList);
+        return "";
+    }
+
+    public String storeTable(String tableName) {
+        if (!tableMap.containsKey(tableName)) {
+            return "ERROR: Table " + tableName + " could not be found";
+        }
+
+        String filename = tableName + ".tbl";
+        PrintWriter out;
+
+        try {
+            out = new PrintWriter(filename);
+        } catch (Exception e) {
+            return "ERROR: " + filename + " could not be opened";
+        }
+
+        out.print(tableMap.get(tableName).toString());
+        out.close();
+
+        return "";
+    }
+
+    public String dropTable(String tableName) {
+        if (!tableMap.containsKey(tableName)) {
+            return "ERROR: Table " + tableName + " could not be found";
+        }
+
+        tableMap.remove(tableName);
+        return "";
+    }
+
+    public String printTable(String tableName) {
+        if (!tableMap.containsKey(tableName)) {
+            return "ERROR: Table " + tableName + " could not be found";
+        }
+
+        return tableMap.get(tableName).toString();
+    }
+
+    public String select(String[] expressions, String[] tableNames, String[] conditions) {
+        Table selected = getSelectedTable(expressions, tableNames, conditions);
+        return selected == null? "" : selected.toString();
+    }
+
+    private Table getSelectedTable(String[] expressions, String[] tableNames, String[] conditions) {
+        for (String name : tableNames) {
+            if (!tableMap.containsKey(name))  {
+                System.out.println("ERROR: Table " + name + " could not be found");
+                return null;
+            }
+        }
+
+        Table result;
+        if (expressions.length == 1 && expressions[0].equals("*")) {
+            result = join(tableNames);
+        } else {
+            result = new Table("");
+            Table joined = join(tableNames);
+            String retVal = evaluateColumnExpressions(result, joined, expressions);
+
+            if (!retVal.equals("")) {
+                System.out.println(retVal);
+                return null;
+            }
+
+        }
+
+        if (conditions != null) {
+            String retVal = evaluateTableConditions(result, conditions);
+
+            if (!retVal.equals("")) {
+                System.out.println(retVal);
+                return null;
+            }
+        }
+
+        return result;
+    }
+
+    private String evaluateColumnExpressions(Table table, Table joined, String[] expressions) {
+        for (String colExpr : expressions) {
+            String[] expr = colExpr.split("\\s+");
+
+            if (expr.length == 1) {
+                if (joined.containsColumn(expr[0])) {
+                    table.addColumnFromTable(joined, expr[0]);
+                } else {
+                    return "ERROR: Could not find " + expr[0] + " in join of provided table names.";
+                }
+            } else if (expr.length == 5 && expr[3].equals("as")) {
+                 return evaluateArithmeticExpression(table, joined, expr);
+            } else {
+                return "ERROR: " + colExpr + " is not a valid column expression.";
+            }
+        }
+        return "";
+    }
+
+    private String evaluateArithmeticExpression(Table table, Table joined, String[] arithmeticExpr) {
+        if (!joined.containsColumn(arithmeticExpr[0])) {
+            return "ERROR: " + arithmeticExpr[0] + " is not in the joined table.";
+        }
+
+        boolean literalsFloat = Pattern.matches(FLOAT_PATTERN, arithmeticExpr[2]);
+        boolean literalsInt = Pattern.matches(INT_PATTERN, arithmeticExpr[2]);
+        boolean literalsString = Pattern.matches(STRING_PATTERN, arithmeticExpr[2]);
+        if (!joined.containsColumn(arithmeticExpr[2])
+                && !literalsFloat && !literalsInt && !literalsString) {
+            return "ERROR: Cannot process " + arithmeticExpr[2];
+        }
+
+        if (!arithmeticExpr[1].equals("+") && literalsString) {
+            return "ERROR: Only + operator can be used on string";
+        }
+
+        Operation operation = getArithmeticOperator(arithmeticExpr[1]);
+
+        if (operation == null) {
+            return "ERROR: Invalid arithmetic operator " + arithmeticExpr[1];
+        }
+
+        table.evaluateArithmeticExpression(joined, operation, arithmeticExpr);
+        return "";
+    }
+
+    private String evaluateTableConditions(Table table, String[] conditions) {
+        for (String cond : conditions) {
+            // Split by spaces that are not between single quotes.
+            String[] condition = cond.split("\\s+(?=([^']*'[^']*')*[^']*$)");
+
+            if (condition.length != 3 ) {
+                return "ERROR: Malformed conditions.";
+            }
+
+            if (!table.containsColumn(condition[0])) {
+                return "ERROR: Table does not contain the column " + condition[0];
+            }
+
+            Comparison comparison = getComparisonOperator(condition[1]);
+            if (comparison == null) {
+                return "ERROR: Unknown conditional operator processed.";
+            }
+
+            boolean literalsFloat = Pattern.matches(FLOAT_PATTERN, condition[2]);
+            boolean literalsInt = Pattern.matches(INT_PATTERN, condition[2]);
+            boolean literalsString = Pattern.matches(STRING_PATTERN, condition[2]);
+
+            if (!literalsFloat && !literalsInt && !literalsString) {
+                return "ERROR: Cannot process condition literal" + condition[2];
+            } else if (literalsString) {
+                condition[2] = condition[2].substring(1, condition[2].length() - 1);
+            }
+
+            table.makeTableCompliant(comparison, condition);
+        }
+        return "";
+    }
+
+    private static Comparison getComparisonOperator(String operator) {
+        switch (operator) {
+            case "=":
+                return new Equals();
+            case "!=":
+                return new NotEquals();
+            case "<":
+                return new LessThan();
+            case ">":
+                return new GreaterThan();
+            case "<=":
+                return new LessOrEqualTo();
+            case ">=":
+                return new GreaterOrEqualTo();
+            default:
+                return null;
+        }
+    }
+
+    private static Operation getArithmeticOperator(String operator) {
+        switch (operator) {
+            case "+":
+                return new Summation();
+            case "-":
+                return new Subtraction();
+            case "*":
+                return new Multiplication();
+            case "/":
+                return new Division();
+            default:
+                return null;
+        }
+    }
+
+    private Table join(String[] tableNames) {
+        LinkedList<Table> tableList = new LinkedList<>();
+        for (String name : tableNames) {
+           tableList.add(tableMap.get(name));
+        }
+
+        return Table.join("", tableList);
+    }
+
 }

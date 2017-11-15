@@ -153,9 +153,7 @@ public class Summation extends AbstractOperation {
         Column<String> result = new Column<>(columnName, c1.getType());
         if (c1.size() > c2.size()) {
             for (int i = 0; i < c1.size(); i++) {
-                if (c1.isNaN(i) || c2.isNaN(i)) {
-                    result.add(Type.NAN);
-                } else if (c1.isNOVALUE(i) && c2.isNOVALUE(i)) {
+                if (c1.isNOVALUE(i) && c2.isNOVALUE(i)) {
                     result.add(Type.NOVALUE);
                 } else if(c2.isNOVALUE(i)) {
                     result.add(c1.get(i));
@@ -175,9 +173,7 @@ public class Summation extends AbstractOperation {
             }
         } else {
             for (int i = 0; i < c2.size(); i++) {
-                if (c2.isNaN(i) || c1.isNaN(i)) {
-                    result.add(Type.NAN);
-                } else if (c2.isNOVALUE(i) && c1.isNOVALUE(i)) {
+                if (c2.isNOVALUE(i) && c1.isNOVALUE(i)) {
                     result.add(Type.NOVALUE);
                 } else if(c1.isNOVALUE(i)) {
                     result.add(c2.get(i));

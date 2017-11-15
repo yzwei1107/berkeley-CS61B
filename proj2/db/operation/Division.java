@@ -117,7 +117,7 @@ public class Division extends AbstractOperation {
                 } else if(c1.isNOVALUE(i)) { // 0 / c2
                     result.add(0);
                 } else if (i < c1.size()) {
-                    if (c2.isNOVALUE(i)) { // c1 / 0
+                    if (c2.isNOVALUE(i) || c2.get(i) == 0) { // c1 / 0
                         result.add(Type.NAN);
                     } else {
                         result.add(c1.get(i) / c2.get(i));

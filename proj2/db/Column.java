@@ -18,9 +18,31 @@ public class Column<Item> {
         this.nanSet = new HashSet<>();
     }
 
+    public Column(Column<Item> otherCol) {
+        this.items = new ArrayList<>();
+        this.name = otherCol.name;
+        this.type = otherCol.type;
+        this.noValueSet = new HashSet<>();
+        this.nanSet = new HashSet<>();
+
+        for (int i = 0; i < otherCol.size(); i++) {
+            if (otherCol.isNOVALUE(i)) {
+                this.add(Type.NOVALUE);
+            } else if (otherCol.isNaN(i)) {
+                this.add(Type.NAN);
+            } else {
+                this.add(otherCol.items.get(i));
+            }
+        }
+    }
+
     /* Adds the item to column */
     public void add(Item item) {
         items.add(item);
+    }
+
+    public void remove(int index) {
+        items.remove(index);
     }
 
     /* Adds NaN or NOVALUE to column */
