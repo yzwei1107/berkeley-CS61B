@@ -217,7 +217,10 @@ public class Database {
                 }
             } else if (expr.length == 5 && expr[3].equals("as")
                     || expr.length == 3 && expr[1].equals("as")) {
-                return evaluateArithmeticExpression(table, joined, colExpr.split("\\s+as\\s+"));
+                String retVal = evaluateArithmeticExpression(table, joined, colExpr.split("\\s+as\\s+"));
+                if (!retVal.equals("")) {
+                    return retVal;
+                }
             } else {
                 return "ERROR: " + colExpr + " is not a valid column expression.";
             }

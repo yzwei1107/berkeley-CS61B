@@ -181,5 +181,28 @@ public class CommandParserTest {
         expected.addRow(Arrays.asList("Berkeley", "2014", "0"));
 
         assertEquals(expected.toString(), CommandParser.eval("print seasonRatios", db));
+
+        CommandParser.eval("load t1", db);
+        CommandParser.eval("load t2", db);
+
+
+        String actual = CommandParser.eval("create table selectMixed as select * from t1, t2", db);
+        assertEquals("", actual);
+
+        expected = new Table("");
+        expected.addColumn("x", Type.INT);
+        expected.addColumn("y", Type.INT);
+        expected.addColumn("z", Type.INT);
+        expected.addRow(Arrays.asList("2", "5", "4"));
+        expected.addRow(Arrays.asList("8", "3", "9"));
+
+        assertEquals(expected.toString(), CommandParser.eval("print selectMixed", db));
+
+        expected = new Table("");
+        expected.addColumn("a", Type.INT);
+        expected.addColumn("b", Type.INT);
+        expected.addRow(Arrays.asList("7", "20"));
+        expected.addRow(Arrays.asList("11", "27"));
+        assertEquals(expected.toString(), CommandParser.eval("select x + y as a, y*z as b from selectMixed", db));
     }
 }
