@@ -41,7 +41,7 @@ abstract class AbstractOperation implements Operation {
 
     /* Returns true if column contains numbers and literal is a number, false otherwise. */
     protected static boolean columnAndLiteralAreIntegers(Column column, String literal) {
-        String intPattern = "\\d+";
+        String intPattern = "-?\\d+";
         boolean literalIsInt = Pattern.matches(intPattern, literal);
 
         return !literal.contains("'") && literalIsInt && column.getType() == Type.INT;

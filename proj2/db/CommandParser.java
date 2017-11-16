@@ -1,6 +1,5 @@
 package db;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -74,7 +73,7 @@ public class CommandParser {
         ArrayList<String> colTypes = new ArrayList<>();
 
         for (String col : cols) {
-            String[] colParams = col.split("\\s");
+            String[] colParams = col.split("\\s+");
 
             if (colParams.length != 2) {
                 return "ERROR: Columns are declared as follows: <column tableName> <type>";

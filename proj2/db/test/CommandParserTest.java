@@ -2,7 +2,6 @@ import db.CommandParser;
 import db.Database;
 import db.Table;
 import db.Type;
-import javafx.scene.control.Tab;
 import org.junit.Test;
 
 import java.io.File;
@@ -16,6 +15,19 @@ public class CommandParserTest {
     public void createTableInsertRowAndDropTable() {
         Database db = new Database();
 
+        assertEquals("", CommandParser.eval("create table t (a string, b int,c   float)", db));
+        assertEquals("", CommandParser.eval("insert into t values 'welcome to',-100,607.4", db));
+        assertEquals("", CommandParser.eval("insert into t values 'boy',1293, NOVALUE", db));
+
+        Table expected = new Table("t");
+        expected.addColumn("a", Type.STRING);
+        expected.addColumn("b", Type.INT);
+        expected.addColumn("c", Type.FLOAT);
+        expected.addRow(Arrays.asList("welcome to", "-100", "607.4"));
+        expected.addRow(Arrays.asList("boy", "1293", "NOVALUE"));
+
+        assertEquals(expected.toString(), CommandParser.eval("print t", db));
+
         String createTableCmd = "create table people (name string, age int, height float)";
         assertEquals("", CommandParser.eval(createTableCmd, db));
 
@@ -23,7 +35,7 @@ public class CommandParserTest {
         assertEquals("", CommandParser.eval("insert into people values 'Jide', 29, 1.65", db));
         assertEquals("", CommandParser.eval("insert into people values 'Jin', 34, 1.93", db));
 
-        Table expected = new Table("people");
+        expected = new Table("people");
         expected.addColumn("name", Type.STRING);
         expected.addColumn("age", Type.INT);
         expected.addColumn("height", Type.FLOAT);

@@ -1,10 +1,23 @@
 package db;
 
-import db.comparison.*;
-import db.operation.*;
+import db.comparison.Comparison;
+import db.comparison.Equals;
+import db.comparison.NotEquals;
+import db.comparison.GreaterThan;
+import db.comparison.LessThan;
+import db.comparison.GreaterOrEqualTo;
+import db.comparison.LessOrEqualTo;
+import db.operation.Operation;
+import db.operation.Summation;
+import db.operation.Subtraction;
+import db.operation.Multiplication;
+import db.operation.Division;
 
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 public class Database {
@@ -14,6 +27,7 @@ public class Database {
     private final String STRING_PATTERN = "'.*'";
 
     private HashMap<String, Table> tableMap;
+    private Table selectedTable = null;
 
     public Database() {
         tableMap = new HashMap<>();
@@ -54,11 +68,10 @@ public class Database {
 
     public String createSelectedTable(String name, String[] exprs,
                                       String[] tableNames, String[] conds) {
-        Table selectedTable = getSelectedTable(exprs, tableNames, conds);
-        if (selectedTable == null) {
-            return "";
+        String retVal = select(exprs, tableNames, conds);
+        if (retVal.substring(0, 5).equals("ERROR:")) {
+            return retVal;
         }
-
         selectedTable.setName(name);
         tableMap.put(name, selectedTable);
         return "";
@@ -81,27 +94,27 @@ public class Database {
             boolean isNOVALUE = rowArray[i].equals("NOVALUE");
             switch (table.getColumnType(i)) {
                 case FLOAT:
-                    String floatPattern = "([0-9].*)\\.([0-9].*)";
+                    String floatPattern = "-?([0-9].*)\\.([0-9].*)";
                     boolean literalIsFloat = Pattern.matches(floatPattern, rowArray[i]);
 
-                    if (!isNOVALUE && (!literalIsFloat || rowArray[i].contains("'"))) {
+                    if (!isNOVALUE && !literalIsFloat) {
                         return "ERROR: Could not find float at index " + i + " of the row.";
                     }
 
                     break;
 
                 case INT:
-                    String intPattern = "\\d+";
+                    String intPattern = "-?\\d+";
                     boolean literalIsInt = Pattern.matches(intPattern, rowArray[i]);
 
-                    if (!isNOVALUE && (!literalIsInt || rowArray[i].contains("'"))) {
+                    if (!isNOVALUE && !literalIsInt) {
                         return "ERROR: Could not find int at index " + i + " of the row.";
                     }
 
                     break;
 
                 case STRING:
-                    String stringPattern = "'.*'";
+                    String stringPattern = "'.+'";
                     boolean literalIsString = Pattern.matches(stringPattern, rowArray[i]);
                     if (!isNOVALUE && !literalIsString) {
                         return "ERROR: Could not find string at index " + i + " of the row.";
@@ -163,15 +176,9 @@ public class Database {
     }
 
     public String select(String[] expressions, String[] tableNames, String[] conditions) {
-        Table selected = getSelectedTable(expressions, tableNames, conditions);
-        return selected == null? "" : selected.toString();
-    }
-
-    private Table getSelectedTable(String[] expressions, String[] tableNames, String[] conditions) {
         for (String name : tableNames) {
             if (!tableMap.containsKey(name))  {
-                System.out.println("ERROR: Table " + name + " could not be found");
-                return null;
+                return "ERROR: Table " + name + " could not be found";
             }
         }
 
@@ -184,8 +191,7 @@ public class Database {
             String retVal = evaluateColumnExpressions(result, joined, expressions);
 
             if (!retVal.equals("")) {
-                System.out.println(retVal);
-                return null;
+                return retVal;
             }
 
         }
@@ -194,12 +200,12 @@ public class Database {
             String retVal = evaluateTableConditions(result, conditions);
 
             if (!retVal.equals("")) {
-                System.out.println(retVal);
-                return null;
+                return retVal;
             }
         }
 
-        return result;
+        selectedTable = result;
+        return result.toString();
     }
 
     private String evaluateColumnExpressions(Table table, Table joined, String[] expressions) {
@@ -213,7 +219,7 @@ public class Database {
                     return "ERROR: Could not find " + expr[0] + " in join of provided table names.";
                 }
             } else if (expr.length == 5 && expr[3].equals("as")) {
-                 return evaluateArithmeticExpression(table, joined, expr);
+                return evaluateArithmeticExpression(table, joined, expr);
             } else {
                 return "ERROR: " + colExpr + " is not a valid column expression.";
             }
@@ -221,7 +227,8 @@ public class Database {
         return "";
     }
 
-    private String evaluateArithmeticExpression(Table table, Table joined, String[] arithmeticExpr) {
+    private String evaluateArithmeticExpression(Table table, Table joined,
+                                                String[] arithmeticExpr) {
         if (!joined.containsColumn(arithmeticExpr[0])) {
             return "ERROR: " + arithmeticExpr[0] + " is not in the joined table.";
         }
@@ -253,7 +260,7 @@ public class Database {
             // Split by spaces that are not between single quotes.
             String[] condition = cond.split("\\s+(?=([^']*'[^']*')*[^']*$)");
 
-            if (condition.length != 3 ) {
+            if (condition.length != 3) {
                 return "ERROR: Malformed conditions.";
             }
 
@@ -318,7 +325,7 @@ public class Database {
     private Table join(String[] tableNames) {
         LinkedList<Table> tableList = new LinkedList<>();
         for (String name : tableNames) {
-           tableList.add(tableMap.get(name));
+            tableList.add(tableMap.get(name));
         }
 
         return Table.join("", tableList);

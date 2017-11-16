@@ -82,22 +82,32 @@ public class Table {
     /* Adds row to table. */
     public void addRow(List<String> row) {
         for (int i = 0; i < row.size(); i++) {
-            Type columnType = columnTypes.get(i);
             Column column = columns.get(i);
 
             if (row.get(i).equals("NOVALUE")) {
                 column.add(Type.NOVALUE);
+                continue;
             }
 
+            Type columnType = columnTypes.get(i);
             switch (columnType) {
                 case FLOAT:
-                    column.add(Double.parseDouble(row.get(i)));
+                    if (row.get(i).equals("NaN")) {
+                        column.add(Type.NAN);
+                    } else {
+                        column.add(Double.parseDouble(row.get(i)));
+                    }
                     break;
                 case INT:
-                    column.add(Integer.parseInt(row.get(i)));
+                    if (row.get(i).equals("NaN")) {
+                        column.add(Type.NAN);
+                    } else {
+                        column.add(Integer.parseInt(row.get(i)));
+                    }
                     break;
-                default:
+                case STRING:
                     column.add(row.get(i));
+                    break;
             }
         }
     }
