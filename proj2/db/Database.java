@@ -15,7 +15,11 @@ import db.operation.Division;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -227,10 +231,10 @@ public class Database {
         String operator;
         String secondOperand;
 
-        final Pattern OPERATION = Pattern.compile("(\\w+)\\s*([+\\-*/])\\s*(\\w+)");
+        final Pattern operationPattern = Pattern.compile("(\\w+)\\s*([+\\-*/])\\s*(\\w+)");
         Matcher matcher;
 
-        if ((matcher = OPERATION.matcher(arithmeticExpr[0])).matches()) {
+        if ((matcher = operationPattern.matcher(arithmeticExpr[0])).matches()) {
             firstOperand = matcher.group(1);
             operator = matcher.group(2);
             secondOperand = matcher.group(3);
