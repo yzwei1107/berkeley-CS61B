@@ -118,7 +118,7 @@ public class CommandParser {
             return "ERROR: Could not open " + filename;
         }
 
-        if (lines.get(0).equals("")) {
+        if (lines.size() == 0 || lines.get(0).equals("")) {
             return "ERROR: Invalid .tbl file";
         }
 
