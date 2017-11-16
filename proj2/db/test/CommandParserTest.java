@@ -131,7 +131,7 @@ public class CommandParserTest {
 
         assertEquals(expected.toString(), CommandParser.eval(selectCmd, db));
 
-        selectCmd = "select City,Season,Wins / Losses as Ratio from teams,records";
+        selectCmd = "select City,Season,Wins/Losses as Ratio from teams,records";
         expected = new Table("");
         expected.addColumn("City", Type.STRING);
         expected.addColumn("Season", Type.INT);

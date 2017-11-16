@@ -1,5 +1,6 @@
 package db;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -152,7 +153,11 @@ public class CommandParser {
     }
 
     private static String storeTable(String tableName, Database db) {
-        return db.storeTable(tableName);
+        try {
+            return db.storeTable(tableName);
+        } catch (FileNotFoundException e) {
+            return "ERROR: " + tableName + ".tbl could not be opened";
+        }
     }
 
     private static String dropTable(String tableName, Database db) {

@@ -13,11 +13,10 @@ import db.operation.Subtraction;
 import db.operation.Multiplication;
 import db.operation.Division;
 
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Database {
@@ -69,7 +68,7 @@ public class Database {
     public String createSelectedTable(String name, String[] exprs,
                                       String[] tableNames, String[] conds) {
         String retVal = select(exprs, tableNames, conds);
-        if (retVal.substring(0, 5).equals("ERROR:")) {
+        if (retVal.substring(0, 6).equals("ERROR:")) {
             return retVal;
         }
         selectedTable.setName(name);
@@ -138,19 +137,13 @@ public class Database {
         return "";
     }
 
-    public String storeTable(String tableName) {
+    public String storeTable(String tableName) throws FileNotFoundException {
         if (!tableMap.containsKey(tableName)) {
             return "ERROR: Table " + tableName + " could not be found";
         }
 
         String filename = tableName + ".tbl";
-        PrintWriter out;
-
-        try {
-            out = new PrintWriter(filename);
-        } catch (Exception e) {
-            return "ERROR: " + filename + " could not be opened";
-        }
+        PrintWriter out = new PrintWriter(filename);
 
         out.print(tableMap.get(tableName).toString());
         out.close();
@@ -218,8 +211,9 @@ public class Database {
                 } else {
                     return "ERROR: Could not find " + expr[0] + " in join of provided table names.";
                 }
-            } else if (expr.length == 5 && expr[3].equals("as")) {
-                return evaluateArithmeticExpression(table, joined, expr);
+            } else if (expr.length == 5 && expr[3].equals("as")
+                    || expr.length == 3 && expr[1].equals("as")) {
+                return evaluateArithmeticExpression(table, joined, colExpr.split("\\s+as\\s+"));
             } else {
                 return "ERROR: " + colExpr + " is not a valid column expression.";
             }
@@ -229,29 +223,47 @@ public class Database {
 
     private String evaluateArithmeticExpression(Table table, Table joined,
                                                 String[] arithmeticExpr) {
-        if (!joined.containsColumn(arithmeticExpr[0])) {
-            return "ERROR: " + arithmeticExpr[0] + " is not in the joined table.";
+        String firstOperand;
+        String operator;
+        String secondOperand;
+
+        final Pattern OPERATION = Pattern.compile("(\\w+)\\s*([+\\-*/])\\s*(\\w+)");
+        Matcher matcher;
+
+        if ((matcher = OPERATION.matcher(arithmeticExpr[0])).matches()) {
+            firstOperand = matcher.group(1);
+            operator = matcher.group(2);
+            secondOperand = matcher.group(3);
+        } else {
+            String arrayString = Arrays.toString(arithmeticExpr).replace(",", "");
+            String expr = arrayString.substring(1, arrayString.length() - 1);
+            return "ERROR: " + expr + " is an invalid column expression.";
         }
 
-        boolean literalsFloat = Pattern.matches(FLOAT_PATTERN, arithmeticExpr[2]);
-        boolean literalsInt = Pattern.matches(INT_PATTERN, arithmeticExpr[2]);
-        boolean literalsString = Pattern.matches(STRING_PATTERN, arithmeticExpr[2]);
-        if (!joined.containsColumn(arithmeticExpr[2])
+        if (!joined.containsColumn(firstOperand)) {
+            return "ERROR: " + firstOperand + " is not in the joined table.";
+        }
+
+        boolean literalsFloat = Pattern.matches(FLOAT_PATTERN, secondOperand);
+        boolean literalsInt = Pattern.matches(INT_PATTERN, secondOperand);
+        boolean literalsString = Pattern.matches(STRING_PATTERN, secondOperand);
+        if (!joined.containsColumn(secondOperand)
                 && !literalsFloat && !literalsInt && !literalsString) {
-            return "ERROR: Cannot process " + arithmeticExpr[2];
+            return "ERROR: Cannot process " + secondOperand;
         }
 
-        if (!arithmeticExpr[1].equals("+") && literalsString) {
+        if (!operator.equals("+") && literalsString) {
             return "ERROR: Only + operator can be used on string";
         }
 
-        Operation operation = getArithmeticOperator(arithmeticExpr[1]);
+        Operation operation = getArithmeticOperator(operator);
 
         if (operation == null) {
-            return "ERROR: Invalid arithmetic operator " + arithmeticExpr[1];
+            return "ERROR: Invalid arithmetic operator " + operator;
         }
 
-        table.evaluateArithmeticExpression(joined, operation, arithmeticExpr);
+        table.evaluateArithmeticExpression(joined, operation, firstOperand, secondOperand,
+                arithmeticExpr[1]);
         return "";
     }
 

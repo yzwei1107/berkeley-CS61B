@@ -86,6 +86,8 @@ public class Column<Item> {
             return "NOVALUE";
         } else if (getType() == Type.STRING) {
             return "'" + items.get(row).toString() + "'";
+        } else if (getType() == Type.FLOAT) {
+            return String.format("%.3f", items.get(row));
         } else {
             return items.get(row).toString();
         }

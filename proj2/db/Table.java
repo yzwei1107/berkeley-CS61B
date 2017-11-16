@@ -348,15 +348,16 @@ public class Table {
     }
 
 
-    public void evaluateArithmeticExpression(Table joined, Operation operation, String[] arithmeticExpr) {
-        Column c1 = joined.columns.get(joined.colNameToIndex.get(arithmeticExpr[0]));
+    public void evaluateArithmeticExpression(Table joined, Operation operation, String firstOperand,
+                                             String secondOperand, String resultName) {
+        Column c1 = joined.columns.get(joined.colNameToIndex.get(firstOperand));
 
         Column result;
-        if (joined.containsColumn(arithmeticExpr[2])) {
-            Column c2 = joined.columns.get(joined.colNameToIndex.get(arithmeticExpr[2]));
-            result = operation.operation(arithmeticExpr[4], c1, c2);
+        if (joined.containsColumn(secondOperand)) {
+            Column c2 = joined.columns.get(joined.colNameToIndex.get(secondOperand));
+            result = operation.operation(resultName, c1, c2);
         } else {
-            result = operation.operation(arithmeticExpr[4], c1, arithmeticExpr[2]);
+            result = operation.operation(resultName, c1, secondOperand);
         }
 
         this.columnNames.add(result.getName());
