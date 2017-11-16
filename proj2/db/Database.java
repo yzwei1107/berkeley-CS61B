@@ -94,7 +94,7 @@ public class Database {
             boolean isNOVALUE = rowArray[i].equals("NOVALUE");
             switch (table.getColumnType(i)) {
                 case FLOAT:
-                    String floatPattern = "-?([0-9].*)\\.([0-9].*)";
+                    String floatPattern = "-?(\\d*\\.\\d+|\\d+.\\d*)";
                     boolean literalIsFloat = Pattern.matches(floatPattern, rowArray[i]);
 
                     if (!isNOVALUE && !literalIsFloat) {

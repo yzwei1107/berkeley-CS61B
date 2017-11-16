@@ -16,7 +16,7 @@ public class Summation extends AbstractOperation {
     }
 
     private boolean columnAndLiteralAreNumeric(Column column, String literal) {
-        String floatPattern = "-?([0-9].*)\\.([0-9].*)";
+        String floatPattern = "-?(\\d*\\.\\d+|\\d+.\\d*)";
         String intPattern = "-?\\d+";
         boolean literalIsFloat = Pattern.matches(floatPattern, literal);
         boolean literalIsInt = Pattern.matches(intPattern, literal);

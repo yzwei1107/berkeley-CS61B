@@ -117,6 +117,10 @@ public class CommandParser {
             return "ERROR: Could not open " + filename;
         }
 
+        if (lines.size() <= 1) {
+            return "ERROR: Invalid .tbl file";
+        }
+
         String[] cols = lines.get(0).split(COMMA);
 
         String ret = createNewTable(tableName, cols, db);
