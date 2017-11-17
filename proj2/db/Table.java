@@ -126,6 +126,11 @@ public class Table {
         return columnTypes.get(index);
     }
 
+    /* Returns type of column of the specified name */
+    public Type getColumnType(String columnName) {
+        return columnTypes.get(colNameToIndex.get(columnName));
+    }
+
     public boolean isEmpty() {
         return columns.isEmpty();
     }

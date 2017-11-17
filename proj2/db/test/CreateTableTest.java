@@ -25,9 +25,9 @@ public class CreateTableTest {
         table.addRow(row3);
 
         String expected = "Name string,Age int,Height float\n" +
-                "'Harold',19,1.75\n" +
-                "'Mike',29,1.79\n" +
-                "'Arnold',42,1.83";
+                "'Harold',19,1.750\n" +
+                "'Mike',29,1.790\n" +
+                "'Arnold',42,1.830";
 
         assertEquals(expected, table.toString());
     }

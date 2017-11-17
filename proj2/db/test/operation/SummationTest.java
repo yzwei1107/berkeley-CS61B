@@ -15,8 +15,6 @@ public class SummationTest {
         c1Double.add(Type.NOVALUE);
         c1Double.add(4.0);
         c1Double.add(Type.NOVALUE);
-        c1Double.add(5.0);
-        c1Double.add(Type.NOVALUE);
 
         Column<Double> c2Double = new Column<>("c2", Type.FLOAT);
         c2Double.add(2.0);
@@ -32,8 +30,6 @@ public class SummationTest {
         expectedDouble.add(Type.NOVALUE);
         expectedDouble.add(4.0);
         expectedDouble.add(7.0);
-        expectedDouble.add(5.0);
-        expectedDouble.add(Type.NOVALUE);
 
         Summation adder = new Summation();
         Column<Double> c3Double = adder.operation("c3", c1Double, c2Double);
@@ -45,8 +41,6 @@ public class SummationTest {
         c1Integer.add(Type.NAN);
         c1Integer.add(Type.NOVALUE);
         c1Integer.add(4);
-        c1Integer.add(Type.NOVALUE);
-        c1Integer.add(5);
         c1Integer.add(Type.NOVALUE);
 
         Column<Integer> c2Integer = new Column<>("c2", Type.INT);
@@ -62,8 +56,6 @@ public class SummationTest {
         expectedInteger.add(Type.NOVALUE);
         expectedInteger.add(4);
         expectedInteger.add(7);
-        expectedInteger.add(5);
-        expectedInteger.add(Type.NOVALUE);
 
         Summation adderInt = new Summation();
         Column<Integer> c3Integer = adderInt.operation("c3", c1Integer, c2Integer);
@@ -81,16 +73,12 @@ public class SummationTest {
         c2String.add(Type.NOVALUE);
         c2String.add(Type.NOVALUE);
         c2String.add("Takeoff");
-        c2String.add("Quavo");
-        c2String.add(Type.NOVALUE);
 
         Column<String> expectedString = new Column<>("c3", Type.STRING);
         expectedString.add("FooBar");
         expectedString.add(Type.NOVALUE);
         expectedString.add("Offset");
         expectedString.add("Takeoff");
-        expectedString.add("Quavo");
-        expectedString.add(Type.NOVALUE);
 
         Summation concatenator = new Summation();
         Column<String> c3String = concatenator.operation("c3", c1String, c2String);

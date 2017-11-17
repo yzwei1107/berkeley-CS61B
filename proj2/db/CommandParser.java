@@ -124,6 +124,7 @@ public class CommandParser {
 
         String[] cols = lines.get(0).split(COMMA);
 
+        db.dropTable(tableName);
         String ret = createNewTable(tableName, cols, db);
         if (!ret.equals("")) {
             return ret;

@@ -15,8 +15,6 @@ public class SubtractionTest {
         c1Double.add(Type.NOVALUE);
         c1Double.add(4.0);
         c1Double.add(Type.NOVALUE);
-        c1Double.add(5.0);
-        c1Double.add(Type.NOVALUE);
 
         Column<Double> c2Double = new Column<>("c2", Type.FLOAT);
         c2Double.add(2.0);
@@ -31,8 +29,6 @@ public class SubtractionTest {
         expectedDouble.add(Type.NOVALUE);
         expectedDouble.add(4.0);
         expectedDouble.add(-7.0);
-        expectedDouble.add(5.0);
-        expectedDouble.add(Type.NOVALUE);
 
         Subtraction subtractor = new Subtraction();
         Column<Double> c3Double = subtractor.operation("c3", c1Double, c2Double);
@@ -44,8 +40,6 @@ public class SubtractionTest {
         c1Integer.add(Type.NAN);
         c1Integer.add(Type.NOVALUE);
         c1Integer.add(4);
-        c1Integer.add(Type.NOVALUE);
-        c1Integer.add(5);
         c1Integer.add(Type.NOVALUE);
 
         Column<Integer> c2Integer = new Column<>("c2", Type.INT);
@@ -61,8 +55,6 @@ public class SubtractionTest {
         expectedInteger.add(Type.NOVALUE);
         expectedInteger.add(4);
         expectedInteger.add(-7);
-        expectedInteger.add(5);
-        expectedInteger.add(Type.NOVALUE);
 
         Subtraction subtractorInt = new Subtraction();
         Column<Integer> c3Integer = subtractorInt.operation("c3", c1Integer, c2Integer);

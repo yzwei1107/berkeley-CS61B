@@ -59,13 +59,12 @@ public class Summation extends AbstractOperation {
             } else if (c1.isNOVALUE(i) && c2.isNOVALUE(i)) {
                 result.add(Type.NOVALUE);
             } else {
-                continue;
+
+                Number c1Val = c1.isNOVALUE(i) ? 0 : (Number) c1.get(i);
+                Number c2Val = c2.isNOVALUE(i) ? 0 : (Number) c2.get(i);
+
+                result.add(c1Val.doubleValue() + c2Val.doubleValue());
             }
-
-            Number c1Val = c1.isNOVALUE(i) ? 0 : (Number) c1.get(i);
-            Number c2Val = c2.isNOVALUE(i) ? 0 : (Number) c2.get(i);
-
-            result.add(c1Val.doubleValue() + c2Val.doubleValue());
         }
 
         return result;

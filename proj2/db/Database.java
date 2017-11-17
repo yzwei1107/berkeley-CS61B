@@ -261,8 +261,15 @@ public class Database {
             return "ERROR: Cannot process " + secondOperand;
         }
 
-        if (!operator.equals("+") && literalsString) {
-            return "ERROR: Only + operator can be used on string";
+        boolean oneOperandIsAString = joined.getColumnType(firstOperand) == Type.STRING;
+        if (joined.containsColumn(secondOperand)) {
+            oneOperandIsAString |= joined.getColumnType(secondOperand) == Type.STRING;
+        } else {
+            oneOperandIsAString |= literalsString;
+        }
+
+        if (!operator.equals("+") && oneOperandIsAString) {
+            return "ERROR: Only + operator can be used on strings";
         }
 
         Operation operation = getArithmeticOperator(operator);
@@ -291,15 +298,16 @@ public class Database {
 
             Comparison comparison = getComparisonOperator(condition[1]);
             if (comparison == null) {
-                return "ERROR: Unknown conditional operator processed.";
+                return "ERROR: Unknown operator " + condition[1] + "processed.";
             }
 
             boolean literalsFloat = Pattern.matches(FLOAT_PATTERN, condition[2]);
             boolean literalsInt = Pattern.matches(INT_PATTERN, condition[2]);
             boolean literalsString = Pattern.matches(STRING_PATTERN, condition[2]);
 
-            if (!literalsFloat && !literalsInt && !literalsString) {
-                return "ERROR: Cannot process condition literal " + condition[2];
+            if (!table.containsColumn(condition[2]) && !literalsFloat && !literalsInt
+                    && !literalsString) {
+                return "ERROR: Cannot process conditional parameter " + condition[2];
             } else if (literalsString) {
                 condition[2] = condition[2].substring(1, condition[2].length() - 1);
             }
@@ -311,7 +319,7 @@ public class Database {
 
     private static Comparison getComparisonOperator(String operator) {
         switch (operator) {
-            case "=":
+            case "==":
                 return new Equals();
             case "!=":
                 return new NotEquals();

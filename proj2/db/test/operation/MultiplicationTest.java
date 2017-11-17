@@ -23,9 +23,6 @@ public class MultiplicationTest {
         c2Double.add(Type.NOVALUE);
         c2Double.add(4.0);
         c2Double.add(Type.NOVALUE);
-        c2Double.add(5.0);
-        c2Double.add(Type.NOVALUE);
-
 
         Column<Double> expectedDouble = new Column<>("c3", Type.FLOAT);
         expectedDouble.add(6.0);
@@ -33,8 +30,6 @@ public class MultiplicationTest {
         expectedDouble.add(Type.NOVALUE);
         expectedDouble.add(0.0);
         expectedDouble.add(0.0);
-        expectedDouble.add(5.0);
-        expectedDouble.add(Type.NOVALUE);
 
         Multiplication multiplier = new Multiplication();
         Column<Double> c3Double = multiplier.operation("c3", c1Double, c2Double);
@@ -54,9 +49,6 @@ public class MultiplicationTest {
         c2Integer.add(Type.NOVALUE);
         c2Integer.add(4);
         c2Integer.add(Type.NOVALUE);
-        c2Integer.add(5);
-        c2Integer.add(Type.NOVALUE);
-
 
         Column<Integer> expectedInteger = new Column<>("c3", Type.INT);
         expectedInteger.add(6);
@@ -64,8 +56,6 @@ public class MultiplicationTest {
         expectedInteger.add(Type.NOVALUE);
         expectedInteger.add(0);
         expectedInteger.add(0);
-        expectedInteger.add(5);
-        expectedInteger.add(Type.NOVALUE);
 
         Multiplication multiplierInt = new Multiplication();
         Column<Integer> c3Integer = multiplierInt.operation("c3", c1Integer, c2Integer);

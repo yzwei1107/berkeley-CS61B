@@ -23,8 +23,6 @@ public class DivisionTest {
         c2Double.add(Type.NOVALUE);
         c2Double.add(4.0);
         c2Double.add(Type.NOVALUE);
-        c2Double.add(5.0);
-        c2Double.add(Type.NOVALUE);
 
 
         Column<Double> expectedDouble = new Column<>("c3", Type.FLOAT);
@@ -33,8 +31,6 @@ public class DivisionTest {
         expectedDouble.add(Type.NOVALUE);
         expectedDouble.add(0.0);
         expectedDouble.add(Type.NAN);
-        expectedDouble.add(5.0);
-        expectedDouble.add(Type.NOVALUE);
 
         Division divider = new Division();
         Column<Double> c3Double = divider.operation("c3", c1Double, c2Double);
@@ -56,9 +52,6 @@ public class DivisionTest {
         c2Integer.add(Type.NOVALUE);
         c2Integer.add(4);
         c2Integer.add(Type.NOVALUE);
-        c2Integer.add(5);
-        c2Integer.add(Type.NOVALUE);
-
 
         Column<Integer> expectedInteger = new Column<>("c3", Type.INT);
         expectedInteger.add(2 / 3);
@@ -67,8 +60,6 @@ public class DivisionTest {
         expectedInteger.add(Type.NOVALUE);
         expectedInteger.add(0);
         expectedInteger.add(Type.NAN);
-        expectedInteger.add(5);
-        expectedInteger.add(Type.NOVALUE);
 
         Division dividerInt = new Division();
         Column<Integer> c3Integer = dividerInt.operation("c3", c1Integer, c2Integer);
