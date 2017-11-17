@@ -367,9 +367,10 @@ public class Table {
             result = operation.operation(resultName, c1, secondOperand);
         }
 
-        this.columnNames.add(result.getName());
+        this.columnNames.add(resultName);
         this.columnTypes.add(result.getType());
         this.columns.add(result);
+        this.colNameToIndex.put(resultName, columns.size() - 1);
     }
 
     public void addColumnFromTable(Table otherTable, String columnName) {

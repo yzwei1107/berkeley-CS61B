@@ -131,7 +131,7 @@ public class CommandParserTest {
 
         assertEquals(expected.toString(), CommandParser.eval(selectCmd, db));
 
-        selectCmd = "select City,Season,Wins/Losses as Ratio from teams,records";
+        selectCmd = "select City,Season,Wins/Losses as Ratio from teams,records where Ratio < 2";
         expected = new Table("");
         expected.addColumn("City", Type.STRING);
         expected.addColumn("Season", Type.INT);
@@ -140,11 +140,7 @@ public class CommandParserTest {
         expected.addRow(Arrays.asList("New York", "2014", "0"));
         expected.addRow(Arrays.asList("New York", "2013", "0"));
         expected.addRow(Arrays.asList("Pittsburgh", "2015", "1"));
-        expected.addRow(Arrays.asList("Pittsburgh", "2014", "2"));
         expected.addRow(Arrays.asList("Pittsburgh", "2013", "1"));
-        expected.addRow(Arrays.asList("New England", "2015", "3"));
-        expected.addRow(Arrays.asList("New England", "2014", "3"));
-        expected.addRow(Arrays.asList("New England", "2013", "3"));
         expected.addRow(Arrays.asList("Berkeley", "2016", "0"));
         expected.addRow(Arrays.asList("Berkeley", "2015", "1"));
         expected.addRow(Arrays.asList("Berkeley", "2014", "0"));
