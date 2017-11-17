@@ -19,7 +19,7 @@ public class LessOrEqualTo extends AbstractComparison {
 
     @Override
     protected boolean compareToString(Column<String> column, String literal, int row) {
-        return !column.isNOVALUE(row) && column.get(row).compareTo(literal) <= 0;
+        return !column.isNOVALUE(row)&& !column.isNaN(row) && column.get(row).compareTo(literal) <= 0;
     }
 
     @Override
