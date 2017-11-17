@@ -330,12 +330,14 @@ public class Table {
             for (int i = 0; i < c1.size(); i++) {
                 if (!comparison.compare(c1, c2, i)) {
                     removeRow(i);
+                    i--;
                 }
             }
         } else {
             for (int i = 0; i < c1.size(); i++) {
                 if (!comparison.compare(c1, condition[2], i)) {
                     removeRow(i);
+                    i--;
                 }
             }
         }

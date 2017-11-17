@@ -150,6 +150,14 @@ public class CommandParserTest {
         expected.addRow(Arrays.asList("Berkeley", "2014", "0"));
 
         assertEquals(expected.toString(), CommandParser.eval(selectCmd, db));
+
+        expected = new Table("");
+        expected.addColumn("TeamName", Type.STRING);
+        expected.addRow(Arrays.asList("Steelers"));
+        expected.addRow(Arrays.asList("Patriots"));
+
+        selectCmd = CommandParser.eval("select TeamName from teams where TeamName > 'Mets'", db);
+        assertEquals(expected.toString(), selectCmd);
     }
 
     @Test

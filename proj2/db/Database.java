@@ -217,7 +217,9 @@ public class Database {
                 }
             } else if (expr.length == 5 && expr[3].equals("as")
                     || expr.length == 3 && expr[1].equals("as")) {
-                String retVal = evaluateArithmeticExpression(table, joined, colExpr.split("\\s+as\\s+"));
+                String retVal = evaluateArithmeticExpression(table, joined,
+                        colExpr.split("\\s+as\\s+"));
+
                 if (!retVal.equals("")) {
                     return retVal;
                 }
@@ -248,7 +250,7 @@ public class Database {
         }
 
         if (!joined.containsColumn(firstOperand)) {
-            return "ERROR: " + firstOperand + " is not in the joined table.";
+            return "ERROR: " + firstOperand + " is not in the table.";
         }
 
         boolean literalsFloat = Pattern.matches(FLOAT_PATTERN, secondOperand);
@@ -297,7 +299,7 @@ public class Database {
             boolean literalsString = Pattern.matches(STRING_PATTERN, condition[2]);
 
             if (!literalsFloat && !literalsInt && !literalsString) {
-                return "ERROR: Cannot process condition literal" + condition[2];
+                return "ERROR: Cannot process condition literal " + condition[2];
             } else if (literalsString) {
                 condition[2] = condition[2].substring(1, condition[2].length() - 1);
             }
