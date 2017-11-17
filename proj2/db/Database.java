@@ -261,15 +261,20 @@ public class Database {
             return "ERROR: Cannot process " + secondOperand;
         }
 
-        boolean oneOperandIsAString = joined.getColumnType(firstOperand) == Type.STRING;
+        boolean oneOperandIsOfTypeString = joined.getColumnType(firstOperand) == Type.STRING;
+        boolean bothOperandsAreStrings = joined.getColumnType(firstOperand) == Type.STRING;
         if (joined.containsColumn(secondOperand)) {
-            oneOperandIsAString |= joined.getColumnType(secondOperand) == Type.STRING;
+            oneOperandIsOfTypeString  |= joined.getColumnType(secondOperand) == Type.STRING;
+            bothOperandsAreStrings &= joined.getColumnType(secondOperand) == Type.STRING;
         } else {
-            oneOperandIsAString |= literalsString;
+            oneOperandIsOfTypeString |= literalsString;
+            bothOperandsAreStrings &= literalsString;
         }
 
-        if (!operator.equals("+") && oneOperandIsAString) {
+        if (!operator.equals("+") && bothOperandsAreStrings) {
             return "ERROR: Only + operator can be used on strings";
+        } else if (!bothOperandsAreStrings && oneOperandIsOfTypeString) {
+            return "ERROR: String and int or float operand in arithmetic expression";
         }
 
         Operation operation = getArithmeticOperator(operator);
