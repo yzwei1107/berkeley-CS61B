@@ -317,6 +317,20 @@ public class Database {
                 condition[2] = condition[2].substring(1, condition[2].length() - 1);
             }
 
+            boolean oneOperandIsOfTypeString = table.getColumnType(condition[0]) == Type.STRING;
+            boolean bothOperandsAreStrings = table.getColumnType(condition[0]) == Type.STRING;
+            if (table.containsColumn(condition[2])) {
+                oneOperandIsOfTypeString  |= table.getColumnType(condition[2]) == Type.STRING;
+                bothOperandsAreStrings &= table.getColumnType(condition[2]) == Type.STRING;
+            } else {
+                oneOperandIsOfTypeString |= literalsString;
+                bothOperandsAreStrings &= literalsString;
+            }
+
+            if (!bothOperandsAreStrings && oneOperandIsOfTypeString) {
+                return "ERROR: String and number columns/literals cannot be compared";
+            }
+
             table.makeTableCompliant(comparison, condition);
         }
         return "";
