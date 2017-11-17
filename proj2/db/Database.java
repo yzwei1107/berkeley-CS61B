@@ -25,9 +25,9 @@ import java.util.regex.Pattern;
 
 public class Database {
 
-    private final String FLOAT_PATTERN = "([0-9].*)\\.([0-9].*)";
-    private final String INT_PATTERN = "\\d+";
-    private final String STRING_PATTERN = "'.*'";
+    private static final String FLOAT_PATTERN = "-?(\\d*\\.\\d+|\\d+\\.\\d*)";
+    private static final String INT_PATTERN = "-?\\d+";
+    private static final String STRING_PATTERN = "'.+'";
 
     private HashMap<String, Table> tableMap;
     private Table selectedTable = null;
@@ -97,8 +97,7 @@ public class Database {
             boolean isNOVALUE = rowArray[i].equals("NOVALUE");
             switch (table.getColumnType(i)) {
                 case FLOAT:
-                    String floatPattern = "-?(\\d*\\.\\d+|\\d+.\\d*)";
-                    boolean literalIsFloat = Pattern.matches(floatPattern, rowArray[i]);
+                    boolean literalIsFloat = Pattern.matches(FLOAT_PATTERN, rowArray[i]);
 
                     if (!isNOVALUE && !literalIsFloat) {
                         return "ERROR: Could not find float at index " + i + " of the row.";
@@ -107,8 +106,7 @@ public class Database {
                     break;
 
                 case INT:
-                    String intPattern = "-?\\d+";
-                    boolean literalIsInt = Pattern.matches(intPattern, rowArray[i]);
+                    boolean literalIsInt = Pattern.matches(INT_PATTERN, rowArray[i]);
 
                     if (!isNOVALUE && !literalIsInt) {
                         return "ERROR: Could not find int at index " + i + " of the row.";
@@ -117,8 +115,7 @@ public class Database {
                     break;
 
                 case STRING:
-                    String stringPattern = "'.+'";
-                    boolean literalIsString = Pattern.matches(stringPattern, rowArray[i]);
+                    boolean literalIsString = Pattern.matches(STRING_PATTERN, rowArray[i]);
                     if (!isNOVALUE && !literalIsString) {
                         return "ERROR: Could not find string at index " + i + " of the row.";
                     }
