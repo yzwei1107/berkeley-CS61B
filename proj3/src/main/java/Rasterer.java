@@ -8,13 +8,12 @@ import java.util.Map;
  * not draw the output correctly.
  */
 public class Rasterer {
-    // Recommended: QuadTree instance variable. You'll need to make
-    //              your own QuadTree since there is no built-in quadtree in Java.
+    private String imgRoot;
+    private TileQuadtree quadtree = new TileQuadtree();
 
-    /** imgRoot is the name of the directory containing the images.
-     *  You may not actually need this for your class. */
+    /* imgRoot is the name of the directory containing the images. */
     public Rasterer(String imgRoot) {
-        // YOUR CODE HERE
+        this.imgRoot = imgRoot;
     }
 
     /**
@@ -46,14 +45,9 @@ public class Rasterer {
      *                    string. <br>
      * "query_success" -> Boolean, whether the query was able to successfully complete. Don't
      *                    forget to set this to true! <br>
-     * @see #REQUIRED_RASTER_REQUEST_PARAMS
      */
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
-        // System.out.println(params);
-        Map<String, Object> results = new HashMap<>();
-        System.out.println("Since you haven't implemented getMapRaster, nothing is displayed in "
-                           + "your browser.");
-        return results;
+        return quadtree.getResults(params, imgRoot);
     }
 
 }
