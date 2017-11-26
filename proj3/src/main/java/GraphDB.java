@@ -5,7 +5,10 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -88,7 +91,7 @@ public class GraphDB {
     }
 
     /** Adds a vertex to the graph. */
-    void addNode(long id, double longitude, double latitude){
+    void addNode(long id, double longitude, double latitude) {
         nodes.put(id, new Node(id, longitude, latitude));
     }
 

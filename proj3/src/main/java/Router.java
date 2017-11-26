@@ -1,6 +1,10 @@
 import edu.princeton.cs.algs4.MinPQ;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * This class provides a shortestPath method for finding routes between two points
@@ -15,7 +19,8 @@ public class Router {
      * Return a LinkedList of <code>Long</code>s representing the shortest path from st to dest, 
      * where the longs are node IDs.
      */
-    public static LinkedList<Long> shortestPath(GraphDB g, double stlon, double stlat, double destlon, double destlat) {
+    public static LinkedList<Long> shortestPath(GraphDB g, double stlon, double stlat,
+                                                double destlon, double destlat) {
         long startNode = g.closest(stlon, stlat);
         long destNode = g.closest(destlon, destlat);
 
