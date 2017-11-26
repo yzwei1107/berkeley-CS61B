@@ -1,4 +1,3 @@
-import example.Trie;
 import org.xml.sax.SAXException;
 
 import java.io.File;

@@ -1,5 +1,3 @@
-package example;
-
 import java.util.*;
 
 public class Trie {

@@ -1,4 +1,3 @@
-import example.Trie;
 import org.junit.Test;
 
 import java.util.Arrays;
