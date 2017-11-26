@@ -1,3 +1,4 @@
+import example.Trie;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -5,10 +6,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -21,6 +19,8 @@ import java.util.HashSet;
  */
 public class GraphDB {
     private Map<Long, Node> nodes = new HashMap<>();
+    private Trie locationNameTrie = new Trie();
+    private Map<String, List<Node>> cleanNameToNode = new HashMap<>();
 
     static class Node {
         long id;
@@ -97,7 +97,15 @@ public class GraphDB {
 
     /** Set the name of the vertex "id". */
     void setNodeName(long id, String name) {
-        nodes.get(id).name = name;
+        String cleanedName = cleanString(name);
+        Node node = nodes.get(id);
+        node.name = name;
+        locationNameTrie.add(cleanedName);
+
+        if (!cleanNameToNode.containsKey(cleanedName)) {
+            cleanNameToNode.put(cleanedName, new LinkedList<>());
+        }
+        cleanNameToNode.get(cleanedName).add(node);
     }
 
     /** Adds an edge between vertices v and w. */
@@ -176,5 +184,40 @@ public class GraphDB {
     /** Latitude of vertex v. */
     double lat(long v) {
         return nodes.get(v).latitude;
+    }
+
+    /** Get locations that contain the given prefix. */
+    List<String> getLocationsByPrefix(String prefix) {
+        List<String> cleanedNames = locationNameTrie.getWordsContainingPrefix(cleanString(prefix));
+
+        List<String> fullLocationNames = new LinkedList<>();
+        for (String cleanName : cleanedNames) {
+            Node node = cleanNameToNode.get(cleanName).get(0);
+            fullLocationNames.add(node.name);
+        }
+
+        return fullLocationNames;
+    }
+
+    /** Get information on locations whose names match the exact query. */
+    List<Map<String, Object>> getLocations(String query) {
+        List<Map<String, Object>> locations = new LinkedList<>();
+
+        String cleanName = cleanString(query);
+        if (!cleanNameToNode.containsKey(cleanName)) {
+            return locations;
+        }
+
+        for (Node node : cleanNameToNode.get(cleanName)) {
+            Map<String, Object> locationInfo = new HashMap<>();
+            locationInfo.put("lon", node.longitude);
+            locationInfo.put("lat", node.latitude);
+            locationInfo.put("name", node.name);
+            locationInfo.put("id", node.id);
+
+            locations.add(locationInfo);
+        }
+
+        return locations;
     }
 }
