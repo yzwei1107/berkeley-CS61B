@@ -71,36 +71,37 @@ public class Board {
                 helperMap.put("word", "" + board[i][j]);
                 helperMap.put("visited", new HashSet<Coords>());
                 stack.push(helperMap);
-            }
-        }
 
-        while (!stack.isEmpty()) {
-            Map<String, Object> helperMap = stack.pop();
-            String word = (String) helperMap.get("word");
-            Coords coordinates = (Coords) helperMap.get("coordinates");
-            HashSet<Coords> visited = new HashSet<>((HashSet<Coords>)helperMap.get("visited"));
-            visited.add(coordinates);
+                while (!stack.isEmpty()) {
+                    helperMap = stack.pop();
+                    String word = (String) helperMap.get("word");
+                    Coords coordinates = (Coords) helperMap.get("coordinates");
+                    HashSet<Coords> visited = new HashSet<>((HashSet<Coords>)helperMap.get("visited"));
+                    visited.add(coordinates);
 
-            if (word.length() >= 3 && dictionaryTrie.containsWord(word)) {
-                addAnswer(word);
-            }
-
-            if (dictionaryTrie.containsPrefix(word)) {
-                for (Direction direction : Direction.values()) {
-                    Coords neighbourCoords = getNeighbourCoordinates(coordinates, direction);
-                    if (neighbourCoords == null || visited.contains(neighbourCoords)) {
-                        continue;
+                    if (word.length() >= 3 && dictionaryTrie.containsWord(word)) {
+                        addAnswer(word);
                     }
-                    int neighbourRow = neighbourCoords.row;
-                    int neighbourCol = neighbourCoords.column;
-                    helperMap = new HashMap<>();
-                    helperMap.put("coordinates", neighbourCoords);
-                    helperMap.put("word", word + board[neighbourRow][neighbourCol]);
-                    helperMap.put("visited", visited);
-                    stack.push(helperMap);
+
+                    if (dictionaryTrie.containsPrefix(word)) {
+                        for (Direction direction : Direction.values()) {
+                            Coords neighbourCoords = getNeighbourCoordinates(coordinates, direction);
+                            if (neighbourCoords == null || visited.contains(neighbourCoords)) {
+                                continue;
+                            }
+                            int neighbourRow = neighbourCoords.row;
+                            int neighbourCol = neighbourCoords.column;
+                            helperMap = new HashMap<>();
+                            helperMap.put("coordinates", neighbourCoords);
+                            helperMap.put("word", word + board[neighbourRow][neighbourCol]);
+                            helperMap.put("visited", visited);
+                            stack.push(helperMap);
+                        }
+                    }
                 }
             }
         }
+
     }
 
     /* Returns the coordinates of the neighbour tile in given direction.
